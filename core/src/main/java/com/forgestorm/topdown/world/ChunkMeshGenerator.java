@@ -71,7 +71,7 @@ public class ChunkMeshGenerator {
                         int worldZ = z + CHUNK_XYZ_LENGTH * chunk.getChunkZ();
 
                         Block block = chunkManager.getWorldChunkBlock(worldX, worldY, worldZ);
-                        if (block == null || block.getBlockType() != BlockType.AIR) continue;
+                        if (block == null || block.getBlockType() == BlockType.AIR) continue;
 
                         // Check neighboring blocks to determine which faces to cull
                         boolean top = isSolid(worldX, worldY + 1, worldZ);
@@ -107,7 +107,7 @@ public class ChunkMeshGenerator {
                         int worldZ = z + CHUNK_XYZ_LENGTH * chunk.getChunkZ();
 
                         Block block = chunkManager.getWorldChunkBlock(worldX, worldY, worldZ);
-                        if (block == null || block.getBlockType() != BlockType.AIR) continue;
+                        if (block == null || block.getBlockType() == BlockType.AIR) continue;
 
                         // Check neighboring blocks to determine which faces to cull
                         boolean top = isSolid(worldX, worldY + 1, worldZ);
@@ -169,6 +169,7 @@ public class ChunkMeshGenerator {
         if (chunk == null) return false;
 
         Block block = chunk.getWorldChunkBlock(worldX, worldY, worldZ);
-        return block != null && block.getBlockType() != BlockType.AIR;
+        if (block == null) return false;
+        return block.getBlockType() != BlockType.AIR;
     }
 }
