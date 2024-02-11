@@ -70,8 +70,8 @@ public class VoxelGameState implements GameState {
         shaderProgram.setUniformMatrix("u_projTrans", camera.combined);
 
         //Unused for now, we can setup once mesh is generating correctly
-        shaderProgram.setUniformf("u_lightDirection", camera.position);
-        shaderProgram.setUniformf("u_lightColor", lightColor.r, lightColor.g, lightColor.b, lightColor.a);
+//        shaderProgram.setUniformf("u_lightDirection", camera.position);
+//        shaderProgram.setUniformf("u_lightColor", lightColor.r, lightColor.g, lightColor.b, lightColor.a);
 
         for (Chunk chunk : chunkManager.getChunks()) {
             Mesh mesh = chunk.getChunkMesh();
