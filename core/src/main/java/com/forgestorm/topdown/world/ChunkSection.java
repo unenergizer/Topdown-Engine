@@ -2,7 +2,7 @@ package com.forgestorm.topdown.world;
 
 import lombok.Getter;
 
-import static com.forgestorm.topdown.GameConstants.Chunk.CHUNK_XYZ_LENGTH;
+import static com.forgestorm.topdown.GameConstants.Chunk.*;
 
 public class ChunkSection {
 
@@ -46,7 +46,10 @@ public class ChunkSection {
         blocks[index] = block;
     }
 
-    private int getIndex(int localX, int localY, int localZ) {
-        return (localZ & 0xf) << 8 | localY << 4 | localX;
+    public int getIndex(int localX, int localY, int localZ) {
+        if (localX >= CHUNK_XYZ_LENGTH || localY >= CHUNK_XYZ_LENGTH || localZ >= CHUNK_XYZ_LENGTH || localX < 0 || localY < 0 || localZ < 0) {
+            throw new IllegalArgumentException("Block coordinates out of chunk bounds!");
+        }
+        return (localZ << MAX_Z_INDEX) | (localY << MAX_Y_INDEX) | localX;
     }
 }

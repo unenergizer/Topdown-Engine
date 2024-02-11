@@ -19,13 +19,19 @@ public class GameConstants {
          */
         public static final int CHUNK_SECTIONS = 2;
         /**
-         * The maximum number of vertical sections in a single chunk.
-         */
-        public static final int MAX_VERTICAL_CHUNK_SECTIONS = 1;
-        /**
          * The Y length of blocks in chunks.
          */
-        public static final int WORLD_HEIGHT = MAX_VERTICAL_CHUNK_SECTIONS * CHUNK_XYZ_LENGTH;
+        public static final int WORLD_HEIGHT = CHUNK_SECTIONS * CHUNK_XYZ_LENGTH;
+        /**
+         * Calculate the number of bits needed for the X index.
+         * log2(width) gives the number of bits needed for X
+         * Used in {@link com.forgestorm.topdown.world.ChunkSection}
+         */
+        public static final int MAX_Y_INDEX = (int) (Math.log(CHUNK_XYZ_LENGTH) / Math.log(2));
+        /**
+         * Cumulative bits of Y. Used in {@link com.forgestorm.topdown.world.ChunkSection}
+         */
+        public static final int MAX_Z_INDEX = MAX_Y_INDEX + (int) (Math.log(CHUNK_XYZ_LENGTH) / Math.log(2));
         /**
          * The length and width of a tile in pixels.
          */
