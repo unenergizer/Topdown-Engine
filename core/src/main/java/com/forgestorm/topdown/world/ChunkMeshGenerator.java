@@ -119,7 +119,7 @@ public class ChunkMeshGenerator {
 
                         // Scale the worldX and worldZ by QUAD_SIZE to avoid overlap
                         float renderX = (x * QUAD_WIDTH) + (CHUNK_XYZ_LENGTH * chunk.getChunkX() * QUAD_WIDTH);
-                        float renderY = y * QUAD_WIDTH;
+                        float renderY = y * QUAD_HEIGHT;
                         float renderZ = (z * QUAD_WIDTH) + (CHUNK_XYZ_LENGTH * chunk.getChunkZ() * QUAD_WIDTH);
 
                         if (!top) {

@@ -37,7 +37,7 @@ public class GameConstants {
         /**
          * The height of a quad in meters.
          */
-        public static final float QUAD_HEIGHT = distort(TILE_SIZE);
+        public static final float QUAD_HEIGHT = 1;
     }
 
     public static class Text {

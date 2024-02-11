@@ -13,5 +13,5 @@ void main() {
     vec4 texColor = texture2D(u_texture, v_texCoords);
     float lightIntensity = max(dot(normalize(v_normal), normalize(u_lightDirection)), 0.0);
     vec4 lightEffect = u_lightColor * lightIntensity;
-    gl_FragColor = texColor * lightEffect;
+    gl_FragColor = texColor; //* lightEffect;
 }
