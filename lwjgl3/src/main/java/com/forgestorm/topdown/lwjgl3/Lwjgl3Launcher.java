@@ -3,10 +3,15 @@ package com.forgestorm.topdown.lwjgl3;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.forgestorm.topdown.Main;
+import com.forgestorm.topdown.demoUtils.DcpTexturePackerManager;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
     public static void main(String[] args) {
+        //The Image Packing that happens on startup
+        DcpTexturePackerManager texturePackerManager = new DcpTexturePackerManager();
+        texturePackerManager.checkWhetherToPackImages();
+
         if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
         createApplication();
     }
@@ -17,6 +22,7 @@ public class Lwjgl3Launcher {
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
+        configuration.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL32, 3, 0);
         configuration.setTitle("Topdown-Engine");
         configuration.useVsync(true);
         //// Limits FPS to the refresh rate of the currently active monitor.

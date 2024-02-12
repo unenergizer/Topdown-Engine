@@ -9,5 +9,7 @@ public interface GameState {
 
     void render();
 
+    default void resize(int width, int height) {}
+
     void dispose();
 }

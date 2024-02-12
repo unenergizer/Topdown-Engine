@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.forgestorm.topdown.CameraUtils;
-import com.forgestorm.topdown.camera.TkPerspectiveCameraController;
+import com.forgestorm.topdown.demoUtils.camera.TkPerspectiveCameraController;
 import com.forgestorm.topdown.state.GameState;
 import com.forgestorm.topdown.world.Chunk;
 import com.forgestorm.topdown.world.ChunkManager;

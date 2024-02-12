@@ -17,7 +17,7 @@ public class GameConstants {
         /**
          * The Z height of the world in chunk layers.
          */
-        public static final int CHUNK_SECTIONS = 2;
+        public static final int CHUNK_SECTIONS = 1;
         /**
          * The Y length of blocks in chunks.
          */

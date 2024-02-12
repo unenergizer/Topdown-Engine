@@ -1,3 +1,6 @@
+plugins {
+  id 'org.jetbrains.kotlin.jvm'
+}
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 eclipse.project.name = appName + '-core'
 
@@ -6,4 +9,15 @@ dependencies {
   api "com.kotcrab.vis:vis-ui:$visUiVersion"
   annotationProcessor "org.projectlombok:lombok:$lombokVersion"
   compileOnly "org.projectlombok:lombok:$lombokVersion"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+  api ("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
+    exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'
+  }
+}
+repositories {
+  mavenCentral()
+}
+kotlin {
+  jvmToolchain(11)
 }

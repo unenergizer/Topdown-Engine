@@ -3,56 +3,72 @@ package com.forgestorm.topdown;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.forgestorm.topdown.camera.TkPerspectiveCameraController;
+import com.forgestorm.topdown.demoUtils.RenderUtils;
 import com.forgestorm.topdown.state.GameState;
 import com.forgestorm.topdown.state.tk.TkGameState;
 import com.forgestorm.topdown.state.voxel.VoxelGameState;
-import com.forgestorm.topdown.world.Chunk;
-import com.forgestorm.topdown.world.ChunkManager;
-import com.forgestorm.topdown.world.ChunkMeshGenerator;
-
-import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_TEST;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
  */
 public class Main extends ApplicationAdapter {
-
     GameState currentState;
+    private int width, height;
+
+    public static RenderUtils renderUtils;
 
     @Override
     public void create() {
-        currentState = new VoxelGameState();
-        currentState.init();
+        //Load Render Utils
+        renderUtils = new RenderUtils(() -> {
+            //Generate the world after asset loading is complete
+            currentState = new VoxelGameState();
+            currentState.init();
+        });
     }
 
     @Override
     public void render() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.G)) {
+        if (!renderUtils.doneLoading()) {
+            return; //We don't render anything unless our assetManager has finished loading textures
+        }
+
+        if (currentState != null && Gdx.input.isKeyJustPressed(Input.Keys.G)) {
             switchGameStates();
         }
 
-        currentState.update();
-        currentState.render();
+        if (currentState != null) {
+            currentState.update();
+            currentState.render();
+        }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        if (currentState != null)
+            currentState.resize(width, height);
     }
 
     @Override
     public void dispose() {
-        currentState.dispose();
+        if (currentState != null)
+            currentState.dispose();
+
+        renderUtils.dispose();
     }
 
     private void switchGameStates() {
         if (currentState instanceof VoxelGameState) {
             currentState = new TkGameState();
             currentState.init();
+            currentState.resize(width, height);
         } else if (currentState instanceof TkGameState) {
             currentState = new VoxelGameState();
             currentState.init();
+            currentState.resize(width, height);
         }
     }
 
