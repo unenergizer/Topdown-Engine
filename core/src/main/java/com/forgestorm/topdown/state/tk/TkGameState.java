@@ -10,9 +10,11 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.forgestorm.topdown.OrthographicPerspectiveRenderer;
+import com.forgestorm.topdown.demoUtils.camera.TkPerspectiveCameraController;
 import com.forgestorm.topdown.state.GameState;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
+import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_TEST;
 import static com.forgestorm.topdown.Main.renderUtils;
 
 public class TkGameState implements GameState {
@@ -29,6 +31,12 @@ public class TkGameState implements GameState {
     private int WorldHeight;
     private float WorldScaleLeftovers;
 
+    boolean rendering2D = true;
+
+    //This is just for debugging the 3D
+    private PerspectiveCamera debugCamera;
+    private TkPerspectiveCameraController camController;
+
     OrthographicPerspectiveRenderer renderer;
     TkMapMeshRenderer mapRenderer;
 
@@ -44,20 +52,27 @@ public class TkGameState implements GameState {
     public void update() {
 
         //Translating the camera in a 2D
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            renderer.translate(new Vector2(0, 1));
+        if (rendering2D) {
+            if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+                renderer.translate(new Vector2(0, -1));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                renderer.translate(new Vector2(0, 1));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                renderer.translate(new Vector2(1, 0));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                renderer.translate(new Vector2(-1, 0));
+            }
+            renderer.update();
+        } else {
+            camController.update();
+            debugCamera.update();
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            renderer.translate(new Vector2(0, -1));
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            rendering2D = !rendering2D;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            renderer.translate(new Vector2(-1, 0));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            renderer.translate(new Vector2(1, 0));
-        }
-
-        renderer.update();
     }
 
     /**
@@ -65,11 +80,17 @@ public class TkGameState implements GameState {
      */
     public Texture drawWorld(SpriteBatch batch) {
         WorldFBO.begin();
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
+        ScreenUtils.clear(0.15f,0.15f,0.2f,1f, true);
+
+        Gdx.gl.glEnable(GL_DEPTH_TEST);
 
         //Draw the mesh here using renderer camera
-        mapRenderer.render(renderer.camera);
+        if (rendering2D)
+            mapRenderer.render(renderer.camera);
+        else
+            mapRenderer.render(debugCamera);
+
+        Gdx.gl.glDisable(GL_DEPTH_TEST);
 
         //This is the 2D rendering to use as reference when checking if the mesh looks correct
         batch.setProjectionMatrix(gameCam.combined);
@@ -91,7 +112,12 @@ public class TkGameState implements GameState {
         batch.setProjectionMatrix(screenCamera.combined);
         batch.begin();
         batch.draw(temp, 0, screenHeight, screenWidth, -screenHeight); //Drawing the FBO texture to screen, scaled up
-        renderUtils.getFont().draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 0, Gdx.graphics.getHeight());
+        renderUtils.getFont().draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 0, screenHeight);
+        renderUtils.getFont().draw(batch, "OrthographicPerspectiveRenderer: " + rendering2D, 0, screenHeight-16);
+        renderUtils.getFont().draw(batch, "Controls: ", 0, screenHeight-32);
+        renderUtils.getFont().draw(batch, "     Press E to switch to 3D debugging View", 0, screenHeight-48);
+        renderUtils.getFont().draw(batch, "         Controls similar to minecraft flight", 0, screenHeight-64);
+        renderUtils.getFont().draw(batch, "     Press G to swap GameStates", 0, screenHeight-80);
         batch.end();
     }
 
@@ -142,6 +168,16 @@ public class TkGameState implements GameState {
             } else {
                 break;
             }
+        }
+
+        if (debugCamera == null) {
+            debugCamera = new PerspectiveCamera(67, WorldWidth, WorldHeight);
+            debugCamera.position.set(0, 0, 0);
+            debugCamera.lookAt(0,0,0);
+            debugCamera.near = 1f;
+            debugCamera.far = 300f;
+            camController = new TkPerspectiveCameraController(debugCamera);
+            Gdx.input.setInputProcessor(camController);
         }
 
         GLFrameBuffer.FrameBufferBuilder frameBufferBuilder = new GLFrameBuffer.FrameBufferBuilder(WorldWidth, WorldHeight);

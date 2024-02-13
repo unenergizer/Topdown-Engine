@@ -61,7 +61,7 @@ public class TkMapMeshRenderer {
 
         if (topTiles) {
             for (int i = 0; i < 25; i++) {
-                float[] tempVerts = getTopTileVertices(i * mS, i * (mS / 2f), -i * (mS / 2f), mS, renderUtils.getTexture("Proto-014"));
+                float[] tempVerts = getTopTileVertices(i * mS, i * (mS / 2f), -i * (mS / 2f), mS, renderUtils.getTexture("Proto-010"));
                 for (int t = 0; t < tempVerts.length; t++) {
                     vertices[vertIndex] = tempVerts[t];
                     vertIndex++;
@@ -71,7 +71,7 @@ public class TkMapMeshRenderer {
 
         if (frontTiles) {
             for (int i = 0; i < 25; i++) {
-                float[] tempVerts = getFrontTileVertices((i + 1) * mS, i * (mS / 2f), -i * (mS / 2f), mS, renderUtils.getTexture("Proto-014"));
+                float[] tempVerts = getFrontTileVertices((i + 1) * mS, i * (mS / 2f), -i * (mS / 2f), mS, renderUtils.getTexture("Proto-058"));
                 for (int t = 0; t < tempVerts.length; t++) {
                     vertices[vertIndex] = tempVerts[t];
                     vertIndex++;
