@@ -61,33 +61,30 @@ public class ChunkMeshGenerator {
 
     private int getNumberOfVisibleBlockFaces(Chunk chunk) {
         int totalFacesToRender = 0;
-        for (int chunkSection = 0; chunkSection < CHUNK_SECTIONS; chunkSection++) {
+        for (int y = 0; y < WORLD_HEIGHT; y++) {
             for (int x = 0; x < CHUNK_XYZ_LENGTH; x++) {
-                for (int y = 0; y < CHUNK_XYZ_LENGTH; y++) {
-                    for (int z = 0; z < CHUNK_XYZ_LENGTH; z++) {
+                for (int z = 0; z < CHUNK_XYZ_LENGTH; z++) {
 
-                        int worldX = x + CHUNK_XYZ_LENGTH * chunk.getChunkX();
-                        int worldY = y + CHUNK_XYZ_LENGTH * chunkSection;
-                        int worldZ = z + CHUNK_XYZ_LENGTH * chunk.getChunkZ();
+                    int worldX = x + CHUNK_XYZ_LENGTH * chunk.getChunkX();
+                    int worldZ = z + CHUNK_XYZ_LENGTH * chunk.getChunkZ();
 
-                        Block block = chunkManager.getWorldChunkBlock(worldX, worldY, worldZ);
-                        if (block == null || block.getBlockType() == BlockType.AIR) continue;
+                    Block block = chunkManager.getWorldChunkBlock(worldX, y, worldZ);
+                    if (block == null || block.getBlockType() == BlockType.AIR) continue;
 
-                        // Check neighboring blocks to determine which faces to cull
-                        boolean top = isSolid(worldX, worldY + 1, worldZ);
-                        boolean bot = isSolid(worldX, worldY - 1, worldZ);
-                        boolean lef = isSolid(worldX - 1, worldY, worldZ);
-                        boolean rig = isSolid(worldX + 1, worldY, worldZ);
-                        boolean fro = isSolid(worldX, worldY, worldZ - 1);
-                        boolean bac = isSolid(worldX, worldY, worldZ + 1);
+                    // Check neighboring blocks to determine which faces to cull
+                    boolean top = isSolid(worldX, y + 1, worldZ);
+                    boolean bot = isSolid(worldX, y - 1, worldZ);
+                    boolean lef = isSolid(worldX - 1, y, worldZ);
+                    boolean rig = isSolid(worldX + 1, y, worldZ);
+                    boolean fro = isSolid(worldX, y, worldZ - 1);
+                    boolean bac = isSolid(worldX, y, worldZ + 1);
 
-                        if (!top) totalFacesToRender = totalFacesToRender + 1;
-                        if (!bot) totalFacesToRender = totalFacesToRender + 1;
-                        if (!lef) totalFacesToRender = totalFacesToRender + 1;
-                        if (!rig) totalFacesToRender = totalFacesToRender + 1;
-                        if (!fro) totalFacesToRender = totalFacesToRender + 1;
-                        if (!bac) totalFacesToRender = totalFacesToRender + 1;
-                    }
+                    if (!top) totalFacesToRender = totalFacesToRender + 1;
+                    if (!bot) totalFacesToRender = totalFacesToRender + 1;
+                    if (!lef) totalFacesToRender = totalFacesToRender + 1;
+                    if (!rig) totalFacesToRender = totalFacesToRender + 1;
+                    if (!fro) totalFacesToRender = totalFacesToRender + 1;
+                    if (!bac) totalFacesToRender = totalFacesToRender + 1;
                 }
             }
         }
@@ -97,49 +94,46 @@ public class ChunkMeshGenerator {
     private void populateVertices(Chunk chunk, float[] vertices) {
         // Populate the vertices array with data
         int vertexOffset = 0;
-        for (int chunkSection = 0; chunkSection < CHUNK_SECTIONS; chunkSection++) {
+        for (int y = 0; y < WORLD_HEIGHT; y++) {
             for (int x = 0; x < CHUNK_XYZ_LENGTH; x++) {
-                for (int y = 0; y < CHUNK_XYZ_LENGTH; y++) {
-                    for (int z = 0; z < CHUNK_XYZ_LENGTH; z++) {
+                for (int z = 0; z < CHUNK_XYZ_LENGTH; z++) {
 
-                        int worldX = x + CHUNK_XYZ_LENGTH * chunk.getChunkX();
-                        int worldY = y + CHUNK_XYZ_LENGTH * chunkSection;
-                        int worldZ = z + CHUNK_XYZ_LENGTH * chunk.getChunkZ();
+                    int worldX = x + CHUNK_XYZ_LENGTH * chunk.getChunkX();
+                    int worldZ = z + CHUNK_XYZ_LENGTH * chunk.getChunkZ();
 
-                        Block block = chunkManager.getWorldChunkBlock(worldX, worldY, worldZ);
-                        if (block == null || block.getBlockType() == BlockType.AIR) continue;
+                    Block block = chunkManager.getWorldChunkBlock(worldX, y, worldZ);
+                    if (block == null || block.getBlockType() == BlockType.AIR) continue;
 
-                        // Check neighboring blocks to determine which faces to cull
-                        boolean top = isSolid(worldX, worldY + 1, worldZ);
-                        boolean bot = isSolid(worldX, worldY - 1, worldZ);
-                        boolean lef = isSolid(worldX - 1, worldY, worldZ);
-                        boolean rig = isSolid(worldX + 1, worldY, worldZ);
-                        boolean fro = isSolid(worldX, worldY, worldZ - 1);
-                        boolean bac = isSolid(worldX, worldY, worldZ + 1);
+                    // Check neighboring blocks to determine which faces to cull
+                    boolean top = isSolid(worldX, y + 1, worldZ);
+                    boolean bot = isSolid(worldX, y - 1, worldZ);
+                    boolean lef = isSolid(worldX - 1, y, worldZ);
+                    boolean rig = isSolid(worldX + 1, y, worldZ);
+                    boolean fro = isSolid(worldX, y, worldZ - 1);
+                    boolean bac = isSolid(worldX, y, worldZ + 1);
 
-                        // Scale the worldX and worldZ by QUAD_SIZE to avoid overlap
-                        float renderX = (x * QUAD_WIDTH) + (CHUNK_XYZ_LENGTH * chunk.getChunkX() * QUAD_WIDTH);
-                        float renderY = y * QUAD_HEIGHT;
-                        float renderZ = (z * QUAD_WIDTH) + (CHUNK_XYZ_LENGTH * chunk.getChunkZ() * QUAD_WIDTH);
+                    // Scale the worldX and worldZ by QUAD_SIZE to avoid overlap
+                    float renderX = (x * QUAD_WIDTH) + (CHUNK_XYZ_LENGTH * chunk.getChunkX() * QUAD_WIDTH);
+                    float renderY = y * QUAD_HEIGHT;
+                    float renderZ = (z * QUAD_WIDTH) + (CHUNK_XYZ_LENGTH * chunk.getChunkZ() * QUAD_WIDTH);
 
-                        if (!top) {
-                            vertexOffset = voxelCube.createTop(vertices, vertexOffset, renderX, renderY, renderZ, textureRegion);
-                        }
-                        if (!bot) {
-                            vertexOffset = voxelCube.createBottom(vertices, vertexOffset, renderX, renderY, renderZ, textureRegion);
-                        }
-                        if (!lef) {
-                            vertexOffset = voxelCube.createLeft(vertices, vertexOffset, renderX, renderY, renderZ, textureRegion);
-                        }
-                        if (!rig) {
-                            vertexOffset = voxelCube.createRight(vertices, vertexOffset, renderX, renderY, renderZ, textureRegion);
-                        }
-                        if (!fro) {
-                            vertexOffset = voxelCube.createFront(vertices, vertexOffset, renderX, renderY, renderZ, textureRegion);
-                        }
-                        if (!bac) {
-                            vertexOffset = voxelCube.createBack(vertices, vertexOffset, renderX, renderY, renderZ, textureRegion);
-                        }
+                    if (!top) {
+                        vertexOffset = voxelCube.createTop(vertices, vertexOffset, renderX, renderY, renderZ, textureRegion);
+                    }
+                    if (!bot) {
+                        vertexOffset = voxelCube.createBottom(vertices, vertexOffset, renderX, renderY, renderZ, textureRegion);
+                    }
+                    if (!lef) {
+                        vertexOffset = voxelCube.createLeft(vertices, vertexOffset, renderX, renderY, renderZ, textureRegion);
+                    }
+                    if (!rig) {
+                        vertexOffset = voxelCube.createRight(vertices, vertexOffset, renderX, renderY, renderZ, textureRegion);
+                    }
+                    if (!fro) {
+                        vertexOffset = voxelCube.createFront(vertices, vertexOffset, renderX, renderY, renderZ, textureRegion);
+                    }
+                    if (!bac) {
+                        vertexOffset = voxelCube.createBack(vertices, vertexOffset, renderX, renderY, renderZ, textureRegion);
                     }
                 }
             }
