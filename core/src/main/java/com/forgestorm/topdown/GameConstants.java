@@ -40,11 +40,11 @@ public class GameConstants {
         /**
          * The length and width of a quad in meters.
          */
-        public static final float QUAD_WIDTH = 1f;
+        public static final float QUAD_WIDTH = 16f;
         /**
          * The height of a quad in meters.
          */
-        public static final float QUAD_HEIGHT = 1;
+        public static final float QUAD_HEIGHT = 16;
     }
 
     public static class Text {

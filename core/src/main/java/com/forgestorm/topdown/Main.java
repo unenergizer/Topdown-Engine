@@ -63,7 +63,7 @@ public class Main extends ApplicationAdapter {
     }
 
     private void switchGameStates() {
-        if (currentState instanceof VoxelGameState) {
+        if (currentState instanceof VoxelGameState2) {
             currentState = new TkGameState();
             currentState.init();
             currentState.resize(width, height);

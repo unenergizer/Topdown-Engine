@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLFrameBuffer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.forgestorm.topdown.OrthographicPerspectiveRenderer;
 import com.forgestorm.topdown.demoUtils.camera.TkPerspectiveCameraController;
@@ -95,7 +96,15 @@ public class TkGameState implements GameState {
         //This is the 2D rendering to use as reference when checking if the mesh looks correct
         batch.setProjectionMatrix(gameCam.combined);
         batch.begin();
+
+        Vector3 mousePos = new Vector3(Gdx.input.getX(),Gdx.input.getY(), 0);
+        gameCam.unproject(mousePos);
+        batch.draw(renderUtils.getTexture("dirt"), (int) mousePos.x, (int) mousePos.y);
+        batch.draw(renderUtils.getTexture("dirt"), (int) mousePos.x, (int) mousePos.y+16);
+
         batch.draw(renderUtils.getTexture("dirt"),0,0);
+        batch.draw(renderUtils.getTexture("Proto-239"),0,16);
+        batch.draw(renderUtils.getTexture("Proto-235"),0,32);
         batch.end();
 
         WorldFBO.end();
@@ -118,6 +127,7 @@ public class TkGameState implements GameState {
         renderUtils.getFont().draw(batch, "     Press E to switch to 3D debugging View", 0, screenHeight-48);
         renderUtils.getFont().draw(batch, "         Controls similar to minecraft flight", 0, screenHeight-64);
         renderUtils.getFont().draw(batch, "     Press G to swap GameStates", 0, screenHeight-80);
+        renderUtils.getFont().draw(batch, "         TkGameState", 0, screenHeight-96);
         batch.end();
     }
 
