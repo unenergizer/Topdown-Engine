@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLFrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -57,13 +56,23 @@ public class VoxelGameState2 implements GameState {
 
         batch = new SpriteBatch();
 
-        texture = renderUtils.getTexture("Proto-000").getTexture();
+        texture = renderUtils.getTexture("cube_top").getTexture();
 
         TextureAtlas.AtlasRegion top = renderUtils.getTexture("cube_top");
         chunkMeshGenerator.setTopRegion(top);
+        TextureAtlas.AtlasRegion bottom = renderUtils.getTexture("cube_bottom");
+        chunkMeshGenerator.setBottomRegion(bottom);
 
-        TextureAtlas.AtlasRegion side = renderUtils.getTexture("cube_front");
-        chunkMeshGenerator.setSideRegion(side);
+        TextureAtlas.AtlasRegion left = renderUtils.getTexture("cube_left");
+        chunkMeshGenerator.setLeftRegion(left);
+        TextureAtlas.AtlasRegion right = renderUtils.getTexture("cube_right");
+        chunkMeshGenerator.setRightRegion(right);
+
+        TextureAtlas.AtlasRegion front = renderUtils.getTexture("cube_front");
+        chunkMeshGenerator.setFrontRegion(front);
+        TextureAtlas.AtlasRegion back = renderUtils.getTexture("cube_back");
+        chunkMeshGenerator.setBackRegion(back);
+
 
         // Move this...
         for (Chunk chunk : chunkManager.getChunks()) {

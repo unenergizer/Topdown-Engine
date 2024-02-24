@@ -24,7 +24,15 @@ public class ChunkMeshGenerator {
     @Setter
     private TextureRegion topRegion;
     @Setter
-    private TextureRegion sideRegion;
+    private TextureRegion bottomRegion;
+    @Setter
+    private TextureRegion leftRegion;
+    @Setter
+    private TextureRegion rightRegion;
+    @Setter
+    private TextureRegion backRegion;
+    @Setter
+    private TextureRegion frontRegion;
 
     public ChunkMeshGenerator(ChunkManager chunkManager) {
         this.chunkManager = chunkManager;
@@ -99,11 +107,11 @@ public class ChunkMeshGenerator {
         float renderZ = (z * QUAD_WIDTH) + (CHUNK_XYZ_LENGTH * chunk.getChunkZ() * QUAD_WIDTH);
 
         if (!top) voxelCube.createTop(vertices, renderX, renderY, renderZ, topRegion);
-        if (!bot) voxelCube.createBottom(vertices, renderX, renderY, renderZ, sideRegion);
-        if (!lef) voxelCube.createLeft(vertices, renderX, renderY, renderZ, sideRegion);
-        if (!rig) voxelCube.createRight(vertices, renderX, renderY, renderZ, sideRegion);
-        if (!fro) voxelCube.createFront(vertices, renderX, renderY, renderZ, sideRegion);
-        if (!bac) voxelCube.createBack(vertices, renderX, renderY, renderZ, sideRegion);
+        if (!bot) voxelCube.createBottom(vertices, renderX, renderY, renderZ, bottomRegion);
+        if (!lef) voxelCube.createLeft(vertices, renderX, renderY, renderZ, leftRegion);
+        if (!rig) voxelCube.createRight(vertices, renderX, renderY, renderZ, rightRegion);
+        if (!fro) voxelCube.createFront(vertices, renderX, renderY, renderZ, frontRegion);
+        if (!bac) voxelCube.createBack(vertices, renderX, renderY, renderZ, backRegion);
     }
 
     private void populateRampVertices(Chunk chunk, List<Vertex> vertices, int x, int y, int z, int worldX, int worldZ) {
@@ -121,10 +129,10 @@ public class ChunkMeshGenerator {
         float renderZ = (z * QUAD_WIDTH) + (CHUNK_XYZ_LENGTH * chunk.getChunkZ() * QUAD_WIDTH);
 
         if (!top) voxelRamp.createTop(vertices, renderX, renderY, renderZ, topRegion);
-        if (!bot) voxelRamp.createBottom(vertices, renderX, renderY, renderZ, sideRegion);
-        if (!rig) voxelRamp.createRight(vertices, renderX, renderY, renderZ, sideRegion);
-        if (!bac) voxelRamp.createBack(vertices, renderX, renderY, renderZ, sideRegion);
-        voxelRamp.createDiagonal(vertices, renderX, renderY, renderZ, sideRegion);
+        if (!bot) voxelRamp.createBottom(vertices, renderX, renderY, renderZ, bottomRegion);
+        if (!rig) voxelRamp.createRight(vertices, renderX, renderY, renderZ, rightRegion);
+        if (!bac) voxelRamp.createBack(vertices, renderX, renderY, renderZ, backRegion);
+        voxelRamp.createDiagonal(vertices, renderX, renderY, renderZ, leftRegion);
     }
 
     private void generateIndices(List<Vertex> allVertices, List<Vertex> uniqueVertices, List<Integer> indices) {
