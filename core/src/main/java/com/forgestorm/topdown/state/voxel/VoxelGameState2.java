@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLFrameBuffer;
@@ -15,7 +16,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.forgestorm.topdown.OrthographicPerspectiveRenderer;
 import com.forgestorm.topdown.demoUtils.camera.TkPerspectiveCameraController;
 import com.forgestorm.topdown.state.GameState;
-import com.forgestorm.topdown.state.tk.TkMapMeshRenderer;
 import com.forgestorm.topdown.world.Chunk;
 import com.forgestorm.topdown.world.ChunkManager;
 import com.forgestorm.topdown.world.ChunkMeshGenerator;
@@ -57,8 +57,13 @@ public class VoxelGameState2 implements GameState {
 
         batch = new SpriteBatch();
 
-        texture = new Texture(Gdx.files.internal("dirt.png"));
-        chunkMeshGenerator.setTextureRegion(new TextureRegion(texture));
+        texture = renderUtils.getTexture("Proto-000").getTexture();
+
+        TextureAtlas.AtlasRegion top = renderUtils.getTexture("cube_top");
+        chunkMeshGenerator.setTopRegion(top);
+
+        TextureAtlas.AtlasRegion side = renderUtils.getTexture("cube_front");
+        chunkMeshGenerator.setSideRegion(side);
 
         // Move this...
         for (Chunk chunk : chunkManager.getChunks()) {

@@ -91,13 +91,13 @@ public class ChunkManager implements Disposable {
                             for (int y = 0; y < CHUNK_XYZ_LENGTH; y++) {
                                 chunk.setLocalChunkBlock(x, y, z, chunkSection);
 
-                                Block volume = chunk.getLocalChunkBlock(x, y, z, chunkSection);
-                                int rand = random.nextInt(6);
-                                if (rand == 0) {
-                                    volume.setBlockType(BlockType.BLOCK);
-                                } else if (rand == 1) {
-                                    volume.setBlockType(BlockType.TRIANGULAR_PRISM_315);
-                                }
+//                                Block volume = chunk.getLocalChunkBlock(x, y, z, chunkSection);
+//                                int rand = random.nextInt(6);
+//                                if (rand == 0) {
+//                                    volume.setBlockType(BlockType.BLOCK);
+//                                } else if (rand == 1) {
+//                                    volume.setBlockType(BlockType.TRIANGULAR_PRISM_315);
+//                                }
 //                                else if (rand == 2) {
 //                                    volume.setBlockType(BlockType.TRIANGULAR_PRISM_135);
 //                                } else if (rand == 3) {

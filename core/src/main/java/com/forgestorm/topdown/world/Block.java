@@ -13,7 +13,7 @@ public class Block {
     private final int localX, localY, localZ;
 
     @Setter
-    private BlockType blockType = BlockType.AIR;
+    private BlockType blockType = BlockType.BLOCK;
 
     public Block(int chunkX, int chunkZ, int chunkSection, int localX, int localY, int localZ) {
         this.chunkX = chunkX;

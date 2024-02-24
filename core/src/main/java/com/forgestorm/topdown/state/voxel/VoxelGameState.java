@@ -50,7 +50,7 @@ public class VoxelGameState implements GameState {
 
         texture = new Texture(Gdx.files.internal("dirt.png"));
 
-        chunkMeshGenerator.setTextureRegion(new TextureRegion(texture));
+        chunkMeshGenerator.setSideRegion(new TextureRegion(texture));
 
         // Move this...
         for (Chunk chunk : chunkManager.getChunks()) {
