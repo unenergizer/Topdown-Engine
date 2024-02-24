@@ -29,6 +29,6 @@ public class Block {
         int worldX = chunkX * CHUNK_XYZ_LENGTH + localX;
         int worldY = chunkZ * CHUNK_XYZ_LENGTH + localY;
         int worldZ = chunkSection * CHUNK_XYZ_LENGTH + localZ;
-        return "Chunk XZ: " + chunkX + SLASH + chunkZ + ", ChunkSection: " + chunkSection + "\nLocal XYZ: " + localX + SLASH + localY + SLASH + localZ + "\nWorld XYZ: " + worldX + SLASH + worldY + SLASH + worldZ;
+        return "Chunk XZ: " + chunkX + SLASH + chunkZ + ", ChunkSection: " + chunkSection + ", BlockType: " + blockType + "\nLocal XYZ: " + localX + SLASH + localY + SLASH + localZ + "\nWorld XYZ: " + worldX + SLASH + worldY + SLASH + worldZ;
     }
 }

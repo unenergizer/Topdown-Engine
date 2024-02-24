@@ -1,30 +1,38 @@
 package com.forgestorm.topdown.world;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum BlockType {
-    AIR,
-    BLOCK,
-    //   -------
-    //   |   / |
-    //   |  /  |
-    //   | /   |
+    AIR(false, false, false, false, false, false),
+    BLOCK(true, true, true,true, true, true),
+    //   |   /
+    //   |  /
+    //   | /
     //   +------
-    DIAGONAL_45,
-    //   -------
-    //   | \   |
-    //   |  \  |
-    //   |   \ |
+    TRIANGULAR_PRISM_45(true, true, true, true, false, true),
+    //     \   |
+    //      \  |
+    //       \ |
     //   ------+
-    DIAGONAL_135,
+    TRIANGULAR_PRISM_135(true, true, false, false, false, false),
     //   ------+
-    //   |   / |
-    //   |  /  |
-    //   | /   |
-    //   -------
-    DIAGONAL_255,
+    //       / |
+    //      /  |
+    //     /   |
+    TRIANGULAR_PRISM_255(true, true, false, false, false, false),
     //   +------
-    //   | \   |
-    //   |  \  |
-    //   |   \ |
-    //   -------
-    DIAGONAL_315
+    //   | \
+    //   |  \
+    //   |   \
+    TRIANGULAR_PRISM_315(true, true, false, true, false, true);
+
+    private final boolean visibleTop;
+    private final boolean visibleBottom;
+    private final boolean visibleLeft;
+    private final boolean visibleRight;
+    private final boolean visibleFront;
+    private final boolean visibleBack;
 }

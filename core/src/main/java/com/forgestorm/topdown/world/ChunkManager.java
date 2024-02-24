@@ -7,8 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import static com.forgestorm.topdown.GameConstants.Chunk.CHUNK_SECTIONS;
-import static com.forgestorm.topdown.GameConstants.Chunk.CHUNK_XYZ_LENGTH;
+import static com.forgestorm.topdown.GameConstants.Chunk.*;
 
 public class ChunkManager implements Disposable {
     private final Map<Integer, Chunk> chunkConcurrentMap = new HashMap<>();
@@ -56,12 +55,9 @@ public class ChunkManager implements Disposable {
     }
 
     private void verifyChunks() {
-        int renderWidthX = 3;
-        int renderHeightY = 2;
-
         System.out.println("Total Chunks: " + chunkConcurrentMap.size());
-        for (int chunkX = 0; chunkX < renderWidthX; chunkX++) {
-            for (int chunkZ = 0; chunkZ < renderHeightY; chunkZ++) {
+        for (int chunkX = 0; chunkX < CHUNKS_RENDER_X; chunkX++) {
+            for (int chunkZ = 0; chunkZ < CHUNKS_RENDER_Z; chunkZ++) {
                 Chunk chunk = getChunk(chunkX, chunkZ);
                 for (int chunkSection = 0; chunkSection < CHUNK_SECTIONS; chunkSection++) {
                     int nonZeroTiles = 0;
@@ -80,13 +76,11 @@ public class ChunkManager implements Disposable {
     }
 
     private void makeTestChunks() {
-        int renderWidthX = 3;
-        int renderHeightY = 2;
         Random random = new Random();
 
         // TESTING:
-        for (int chunkX = 0; chunkX < renderWidthX; chunkX++) {
-            for (int chunkZ = 0; chunkZ < renderHeightY; chunkZ++) {
+        for (int chunkX = 0; chunkX < CHUNKS_RENDER_X; chunkX++) {
+            for (int chunkZ = 0; chunkZ < CHUNKS_RENDER_Z; chunkZ++) {
 
                 Chunk chunk = new Chunk(chunkX, chunkZ);
                 setChunk(chunk);
@@ -98,18 +92,19 @@ public class ChunkManager implements Disposable {
                                 chunk.setLocalChunkBlock(x, y, z, chunkSection);
 
                                 Block volume = chunk.getLocalChunkBlock(x, y, z, chunkSection);
-                                int rand = random.nextInt(10);
+                                int rand = random.nextInt(6);
                                 if (rand == 0) {
                                     volume.setBlockType(BlockType.BLOCK);
                                 } else if (rand == 1) {
-                                    volume.setBlockType(BlockType.DIAGONAL_45);
-                                } else if (rand == 2) {
-                                    volume.setBlockType(BlockType.DIAGONAL_135);
-                                } else if (rand == 3) {
-                                    volume.setBlockType(BlockType.DIAGONAL_255);
-                                } else if (rand == 4) {
-                                    volume.setBlockType(BlockType.DIAGONAL_315);
+                                    volume.setBlockType(BlockType.TRIANGULAR_PRISM_315);
                                 }
+//                                else if (rand == 2) {
+//                                    volume.setBlockType(BlockType.TRIANGULAR_PRISM_135);
+//                                } else if (rand == 3) {
+//                                    volume.setBlockType(BlockType.TRIANGULAR_PRISM_255);
+//                                } else if (rand == 4) {
+//                                    volume.setBlockType(BlockType.TRIANGULAR_PRISM_45);
+//                                }
                             }
                         }
                     }

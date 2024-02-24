@@ -9,7 +9,8 @@ public class GameConstants {
      * Constants related to chunk size and rendering.
      */
     public static class Chunk {
-
+        public static  final int CHUNKS_RENDER_X = 2;
+        public static  final int CHUNKS_RENDER_Z = 2;
         /**
          * The length, width, and height of a chunk. Min value 2.
          */

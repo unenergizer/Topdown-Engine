@@ -16,7 +16,8 @@ public final class CameraUtils {
             getOrthographicViewportHeight(viewportHeight));
         camera.near = 0.01f;
         camera.far = 100f;
-        camera.position.set(8, 0, 17 * QUAD_WIDTH);
+//        camera.position.set(8, 0, 17 * QUAD_WIDTH);
+        camera.position.set(4, 0, 4);
 //        camera.direction.rotate(Vector3.Y, 45.0F);
         camera.direction.rotate(Vector3.X, 45.0F);
         camera.up.set(Vector3.Y);
@@ -35,9 +36,10 @@ public final class CameraUtils {
         PerspectiveCamera camera = new PerspectiveCamera(67f, viewportWidth, viewportHeight);
         camera.near = 0.01f;
         camera.far = 1000f;
-        camera.position.set(-5f, 50f, -5f);
+        camera.position.set(-5f, 5f, 0f);
         camera.up.set(Vector3.Y);
-        camera.lookAt(0, 45, 0);
+        camera.lookAt(0, 0, 0);
+//        camera.lookAt(0, 45, 0);
         return camera;
     }
 }

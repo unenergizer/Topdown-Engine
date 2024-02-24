@@ -8,6 +8,7 @@ import com.forgestorm.topdown.demoUtils.RenderUtils;
 import com.forgestorm.topdown.state.GameState;
 import com.forgestorm.topdown.state.tk.TkGameState;
 import com.forgestorm.topdown.state.voxel.VoxelGameState;
+import com.forgestorm.topdown.state.voxel.VoxelGameState2;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
@@ -23,8 +24,9 @@ public class Main extends ApplicationAdapter {
         //Load Render Utils
         renderUtils = new RenderUtils(() -> {
             //Generate the world after asset loading is complete
-            currentState = new VoxelGameState();
+            currentState = new VoxelGameState2();
             currentState.init();
+            currentState.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         });
     }
 
@@ -66,7 +68,7 @@ public class Main extends ApplicationAdapter {
             currentState.init();
             currentState.resize(width, height);
         } else if (currentState instanceof TkGameState) {
-            currentState = new VoxelGameState();
+            currentState = new VoxelGameState2();
             currentState.init();
             currentState.resize(width, height);
         }
