@@ -23,14 +23,18 @@ public class OrthographicPerspectiveRenderer {
         reCalcCamera(true);
     }
 
-    public void translate(Vector2 translation) {
+    public void translate(Vector3 translation) {
+        if (translation.z > 0) {
+            camera.position.z += distort(translation.z);
+        }
+        if (translation.z < 0) {
+            camera.position.z -= distort(translation.z * -1);
+        }
         if (translation.y > 0) {
-            camera.position.y -= distort(0.5f * translation.y);
-            camera.position.z += distort(0.5f * translation.y);
+            camera.position.y -= distort(translation.y);
         }
         if (translation.y < 0) {
-            camera.position.y += distort(0.5f * translation.y * -1);
-            camera.position.z -= distort(0.5f * translation.y * -1);
+            camera.position.y += distort(translation.y * -1);
         }
         if (translation.x < 0) {
             camera.position.x += translation.x * -1;

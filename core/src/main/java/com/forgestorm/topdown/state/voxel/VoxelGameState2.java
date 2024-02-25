@@ -86,21 +86,23 @@ public class VoxelGameState2 implements GameState {
 
         //Translating the camera in a 2D
         if (rendering2D) {
+            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                renderer.translate(new Vector3(0, -1,0));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                renderer.translate(new Vector3(0, 1,0));
+            }
             if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-                renderer.translate(new Vector2(0, -1));
-                System.out.println("W");
+                renderer.translate(new Vector3(0, 0,-1));
             }
             if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-                renderer.translate(new Vector2(0, 1));
-                System.out.println("S");
+                renderer.translate(new Vector3(0, 0,1));
             }
             if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                renderer.translate(new Vector2(1, 0));
-                System.out.println("A");
+                renderer.translate(new Vector3(1, 0,0));
             }
             if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                renderer.translate(new Vector2(-1, 0));
-                System.out.println("D");
+                renderer.translate(new Vector3(-1, 0,0));
             }
             renderer.update();
         } else {
