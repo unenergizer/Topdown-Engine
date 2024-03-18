@@ -87,6 +87,8 @@ public class VoxelGameState2 implements GameState {
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             //Switches from 2D to 3D
             rendering2D = !rendering2D;
+            if (!rendering2D)
+                renderer.createFrustumMesh(); //Create a new mesh for the cameras position at time of switch
         }
     }
 
@@ -101,6 +103,7 @@ public class VoxelGameState2 implements GameState {
             chunkManager.draw(renderer.camera);
         } else {
             chunkManager.draw(debugCamera);
+            renderer.drawDebuggingFrustumMesh(debugCamera);
         }
 
         //This is the 2D rendering to use as reference when checking if the mesh looks correct
@@ -194,7 +197,7 @@ public class VoxelGameState2 implements GameState {
             debugCamera.position.set(0, 0, 0);
             debugCamera.lookAt(0,0,0);
             debugCamera.near = 1f;
-            debugCamera.far = 300f;
+            debugCamera.far = 10000f;
             camController = new TkPerspectiveCameraController(debugCamera);
             Gdx.input.setInputProcessor(camController);
         }
@@ -220,6 +223,7 @@ public class VoxelGameState2 implements GameState {
         batch.dispose();
         WorldFBO.dispose();
         chunkManager.dispose();
+        renderer.dispose();
     }
 
 }
