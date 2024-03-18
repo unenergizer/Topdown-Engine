@@ -24,10 +24,7 @@ import static com.forgestorm.topdown.Main.loadShader;
 import static com.forgestorm.topdown.Main.renderUtils;
 
 public class VoxelGameState2 implements GameState {
-    private final ChunkManager chunkManager = new ChunkManager();
-    private final ChunkMeshGenerator chunkMeshGenerator = new ChunkMeshGenerator(chunkManager);
-    private ShaderProgram shaderProgram;
-    private Texture texture;
+    private ChunkManager chunkManager;
     private OrthographicCamera screenCamera;
     private OrthographicCamera gameCam;
     private FrameBuffer WorldFBO;
@@ -50,40 +47,17 @@ public class VoxelGameState2 implements GameState {
 
     @Override
     public void init() {
-        shaderProgram = loadShader("shaders/skybox.vert", "shaders/skybox.frag");
         //Resize is ran after init, we do not need to setup cameras here
-        System.out.println("Init TK");
+        System.out.println("Init VoxelGameState");
 
         batch = new SpriteBatch();
 
-        texture = renderUtils.getTexture("cube_top").getTexture();
-
-        TextureAtlas.AtlasRegion top = renderUtils.getTexture("cube_top");
-        chunkMeshGenerator.setTopRegion(top);
-        TextureAtlas.AtlasRegion bottom = renderUtils.getTexture("cube_bottom");
-        chunkMeshGenerator.setBottomRegion(bottom);
-
-        TextureAtlas.AtlasRegion left = renderUtils.getTexture("cube_left");
-        chunkMeshGenerator.setLeftRegion(left);
-        TextureAtlas.AtlasRegion right = renderUtils.getTexture("cube_right");
-        chunkMeshGenerator.setRightRegion(right);
-
-        TextureAtlas.AtlasRegion front = renderUtils.getTexture("cube_front");
-        chunkMeshGenerator.setFrontRegion(front);
-        TextureAtlas.AtlasRegion back = renderUtils.getTexture("cube_back");
-        chunkMeshGenerator.setBackRegion(back);
-
-
-        // Move this...
-        for (Chunk chunk : chunkManager.getChunks()) {
-            System.out.println("Generating Chunk Mesh: " + chunk);
-            chunkMeshGenerator.generateChunkMesh(chunk);
-        }
+        chunkManager = new ChunkManager(renderUtils.getTexture("cube_top").getTexture());
+        chunkManager.generateAllMeshes();
     }
 
     @Override
     public void update() {
-
         //Translating the camera in a 2D
         if (rendering2D) {
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
@@ -106,10 +80,12 @@ public class VoxelGameState2 implements GameState {
             }
             renderer.update();
         } else {
+            //3D Debug Camera
             camController.update();
             debugCamera.update();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            //Switches from 2D to 3D
             rendering2D = !rendering2D;
         }
     }
@@ -121,31 +97,11 @@ public class VoxelGameState2 implements GameState {
         WorldFBO.begin();
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f, true);
 
-        Gdx.gl.glEnable(GL_DEPTH_TEST);
-
-        //Draw the mesh here using renderer camera
-        for (Chunk chunk : chunkManager.getChunks()) {
-            Mesh mesh = chunk.getChunkMesh();
-            if (mesh == null) continue;
-
-            if (rendering2D) {
-                texture.bind();
-                shaderProgram.bind();
-                shaderProgram.setUniformi("u_texture", 0);
-                shaderProgram.setUniformMatrix("u_projTrans", renderer.camera.combined);
-                shaderProgram.setUniformf("u_modelPos", new Vector3(0,0,0));
-            } else {
-                texture.bind();
-                shaderProgram.bind();
-                shaderProgram.setUniformi("u_texture", 0);
-                shaderProgram.setUniformMatrix("u_projTrans", debugCamera.combined);
-                shaderProgram.setUniformf("u_modelPos", new Vector3(0,0,0));
-            }
-
-            mesh.render(shaderProgram, GL32.GL_TRIANGLES);
+        if (rendering2D) {
+            chunkManager.draw(renderer.camera);
+        } else {
+            chunkManager.draw(debugCamera);
         }
-
-        Gdx.gl.glDisable(GL_DEPTH_TEST);
 
         //This is the 2D rendering to use as reference when checking if the mesh looks correct
         batch.setProjectionMatrix(gameCam.combined);
@@ -162,6 +118,7 @@ public class VoxelGameState2 implements GameState {
         WorldFBO.end();
         WorldFBO.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
+        //Return the output texture to be scaled up to screen size
         return WorldFBO.getColorBufferTexture();
     }
 
@@ -262,6 +219,7 @@ public class VoxelGameState2 implements GameState {
     public void dispose() {
         batch.dispose();
         WorldFBO.dispose();
+        chunkManager.dispose();
     }
 
 }

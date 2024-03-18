@@ -126,7 +126,7 @@ public class TkPerspectiveCameraController extends GestureDetector {
 
     public void update() {
         if (rotateRightPressed || rotateLeftPressed || forwardPressed || backwardPressed || leftPressed || rightPressed || upPressed || downPressed) {
-            float delta = Gdx.graphics.getDeltaTime();
+            float delta = Gdx.graphics.getDeltaTime() * 4;
             if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT))
                 delta *= 2;
             if (rotateRightPressed) camera.rotate(camera.up, -delta * rotateAngle);

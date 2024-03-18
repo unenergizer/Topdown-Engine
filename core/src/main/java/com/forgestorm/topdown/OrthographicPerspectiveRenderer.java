@@ -75,9 +75,4 @@ public class OrthographicPerspectiveRenderer {
         return val + (val * ((float) Math.sqrt(2) - 1f));
     }
 
-    public void dispose() {
-
-    }
-
-
 }

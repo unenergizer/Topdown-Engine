@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.forgestorm.topdown.demoUtils.RenderUtils;
 import com.forgestorm.topdown.state.GameState;
 import com.forgestorm.topdown.state.tk.TkGameState;
-import com.forgestorm.topdown.state.voxel.VoxelGameState;
 import com.forgestorm.topdown.state.voxel.VoxelGameState2;
 
 /**

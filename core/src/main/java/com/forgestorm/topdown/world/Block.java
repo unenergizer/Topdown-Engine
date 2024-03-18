@@ -1,16 +1,32 @@
 package com.forgestorm.topdown.world;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.forgestorm.topdown.GameConstants.Chunk.CHUNK_XYZ_LENGTH;
+import static com.forgestorm.topdown.GameConstants.Chunk.CHUNK_SIZE;
 import static com.forgestorm.topdown.GameConstants.Text.SLASH;
+import static com.forgestorm.topdown.Main.renderUtils;
 
 @Getter
 public class Block {
 
     private final int chunkX, chunkZ, chunkSection;
     private final int localX, localY, localZ;
+
+    @Setter
+    private TextureRegion topRegion;
+    @Setter
+    private TextureRegion bottomRegion;
+    @Setter
+    private TextureRegion leftRegion;
+    @Setter
+    private TextureRegion rightRegion;
+    @Setter
+    private TextureRegion backRegion;
+    @Setter
+    private TextureRegion frontRegion;
 
     @Setter
     private BlockType blockType = BlockType.BLOCK;
@@ -22,13 +38,35 @@ public class Block {
         this.localX = localX;
         this.localY = localY;
         this.localZ = localZ;
+
+        TextureAtlas.AtlasRegion top = renderUtils.getTexture("cube_top");
+        setTopRegion(top);
+        TextureAtlas.AtlasRegion bottom = renderUtils.getTexture("cube_bottom");
+        setBottomRegion(bottom);
+
+        TextureAtlas.AtlasRegion left = renderUtils.getTexture("cube_left");
+        setLeftRegion(left);
+        TextureAtlas.AtlasRegion right = renderUtils.getTexture("cube_right");
+        setRightRegion(right);
+
+        TextureAtlas.AtlasRegion front = renderUtils.getTexture("cube_front");
+        setFrontRegion(front);
+        TextureAtlas.AtlasRegion back = renderUtils.getTexture("cube_back");
+        setBackRegion(back);
+    }
+
+    public int getWorldX() {
+        return chunkX * CHUNK_SIZE + localX;
+    }
+    public int getWorldY() {
+        return chunkZ * CHUNK_SIZE + localY;
+    }
+    public int getWorldZ() {
+        return chunkSection * CHUNK_SIZE + localZ;
     }
 
     @Override
     public String toString() {
-        int worldX = chunkX * CHUNK_XYZ_LENGTH + localX;
-        int worldY = chunkZ * CHUNK_XYZ_LENGTH + localY;
-        int worldZ = chunkSection * CHUNK_XYZ_LENGTH + localZ;
-        return "Chunk XZ: " + chunkX + SLASH + chunkZ + ", ChunkSection: " + chunkSection + ", BlockType: " + blockType + "\nLocal XYZ: " + localX + SLASH + localY + SLASH + localZ + "\nWorld XYZ: " + worldX + SLASH + worldY + SLASH + worldZ;
+        return "Chunk XZ: " + chunkX + SLASH + chunkZ + ", ChunkSection: " + chunkSection + ", BlockType: " + blockType + "\nLocal XYZ: " + localX + SLASH + localY + SLASH + localZ + "\nWorld XYZ: " + getWorldX() + SLASH + getWorldY() + SLASH + getWorldZ();
     }
 }

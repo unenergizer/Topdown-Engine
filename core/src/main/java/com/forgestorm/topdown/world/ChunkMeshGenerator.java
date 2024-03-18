@@ -3,9 +3,7 @@ package com.forgestorm.topdown.world;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,19 +18,6 @@ public class ChunkMeshGenerator {
     private final VoxelRamp voxelRamp = new VoxelRamp(true);
 
     private final ChunkManager chunkManager;
-
-    @Setter
-    private TextureRegion topRegion;
-    @Setter
-    private TextureRegion bottomRegion;
-    @Setter
-    private TextureRegion leftRegion;
-    @Setter
-    private TextureRegion rightRegion;
-    @Setter
-    private TextureRegion backRegion;
-    @Setter
-    private TextureRegion frontRegion;
 
     public ChunkMeshGenerator(ChunkManager chunkManager) {
         this.chunkManager = chunkManager;
@@ -54,23 +39,18 @@ public class ChunkMeshGenerator {
         generateIndices(allVertices, uniqueVertices, indices);
 
         System.out.println("AllVertices: " + allVertices.size() + ", UniqueVertices: " + uniqueVertices.size() + ", Indices: " + indices.size());
-//        System.out.println(indices);
 
         // Create the mesh
-        Mesh mesh = createMesh(uniqueVertices, indices);
-        chunk.setChunkMesh(mesh);
+        chunk.setChunkMesh(createMesh(uniqueVertices, indices));
     }
 
     private void populateVertices(Chunk chunk, List<Vertex> vertices) {
         // Populate the vertices array with data
-        for (int y = 0; y < WORLD_HEIGHT; y++) {
-            for (int x = 0; x < CHUNK_XYZ_LENGTH; x++) {
-                for (int z = 0; z < CHUNK_XYZ_LENGTH; z++) {
+        for (int y = 0; y < chunk.getHeight()*CHUNK_SIZE; y++) {
+            for (int x = 0; x < CHUNK_SIZE; x++) {
+                for (int z = 0; z < CHUNK_SIZE; z++) {
 
-                    int worldX = x + CHUNK_XYZ_LENGTH * chunk.getChunkX();
-                    int worldZ = z + CHUNK_XYZ_LENGTH * chunk.getChunkZ();
-
-                    Block block = chunkManager.getWorldChunkBlock(worldX, y, worldZ);
+                    Block block = chunkManager.getWorldChunkBlock(x + CHUNK_SIZE * chunk.getChunkX(), y, z + CHUNK_SIZE * chunk.getChunkZ());
                     if (block == null) continue;
 
                     BlockType blockType = block.getBlockType();
@@ -78,13 +58,13 @@ public class ChunkMeshGenerator {
 
                     switch (blockType) {
                         case BLOCK:
-                            populateBlockVertices(chunk, vertices, x, y, z, worldX, worldZ);
+                            populateBlockVertices(vertices, x, y, z, block);
                             break;
                         case TRIANGULAR_PRISM_45:
                         case TRIANGULAR_PRISM_135:
                         case TRIANGULAR_PRISM_255:
                         case TRIANGULAR_PRISM_315:
-                            populateRampVertices(chunk, vertices, x, y, z, worldX, worldZ);
+                            populateRampVertices(vertices, x, y, z, block);
                             break;
                     }
                 }
@@ -92,47 +72,47 @@ public class ChunkMeshGenerator {
         }
     }
 
-    private void populateBlockVertices(Chunk chunk, List<Vertex> vertices, int x, int y, int z, int worldX, int worldZ) {
+    private void populateBlockVertices(List<Vertex> vertices, int x, int y, int z, Block block) {
         // Check neighboring blocks to determine which faces to cull
-        boolean top = isSolid(worldX, y + 1, worldZ, FaceType.TOP);
-        boolean bot = isSolid(worldX, y - 1, worldZ, FaceType.BOTTOM);
-        boolean lef = isSolid(worldX - 1, y, worldZ, FaceType.LEFT);
-        boolean rig = isSolid(worldX + 1, y, worldZ, FaceType.RIGHT);
-        boolean fro = isSolid(worldX, y, worldZ - 1, FaceType.FRONT);
-        boolean bac = isSolid(worldX, y, worldZ + 1, FaceType.BACK);
+        boolean top = isSolid(block.getWorldX(), block.getWorldY() + 1, block.getWorldZ());
+        boolean bot = isSolid(block.getWorldX(), block.getWorldY() - 1, block.getWorldZ());
+        boolean lef = isSolid(block.getWorldX() - 1, block.getWorldY(), block.getWorldZ());
+        boolean rig = isSolid(block.getWorldX() + 1, block.getWorldY(), block.getWorldZ());
+        boolean fro = isSolid(block.getWorldX(), block.getWorldY(), block.getWorldZ() - 1);
+        boolean bac = isSolid(block.getWorldX(), block.getWorldY(), block.getWorldZ() + 1);
 
         // Scale the worldX and worldZ by QUAD_SIZE to avoid overlap
-        float renderX = (x * QUAD_WIDTH) + (CHUNK_XYZ_LENGTH * chunk.getChunkX() * QUAD_WIDTH);
+        float renderX = x * QUAD_WIDTH;
         float renderY = y * QUAD_HEIGHT;
-        float renderZ = (z * QUAD_WIDTH) + (CHUNK_XYZ_LENGTH * chunk.getChunkZ() * QUAD_WIDTH);
+        float renderZ = z * QUAD_WIDTH;
 
-        if (!top) voxelCube.createTop(vertices, renderX, renderY, renderZ, topRegion);
-        if (!bot) voxelCube.createBottom(vertices, renderX, renderY, renderZ, bottomRegion);
-        if (!lef) voxelCube.createLeft(vertices, renderX, renderY, renderZ, leftRegion);
-        if (!rig) voxelCube.createRight(vertices, renderX, renderY, renderZ, rightRegion);
-        if (!fro) voxelCube.createFront(vertices, renderX, renderY, renderZ, frontRegion);
-        if (!bac) voxelCube.createBack(vertices, renderX, renderY, renderZ, backRegion);
+        if (!top) voxelCube.createTop(vertices, renderX, renderY, renderZ, block.getTopRegion());
+        if (!bot) voxelCube.createBottom(vertices, renderX, renderY, renderZ, block.getBottomRegion());
+        if (!lef) voxelCube.createLeft(vertices, renderX, renderY, renderZ, block.getLeftRegion());
+        if (!rig) voxelCube.createRight(vertices, renderX, renderY, renderZ, block.getRightRegion());
+        if (!fro) voxelCube.createFront(vertices, renderX, renderY, renderZ, block.getFrontRegion());
+        if (!bac) voxelCube.createBack(vertices, renderX, renderY, renderZ, block.getBackRegion());
     }
 
-    private void populateRampVertices(Chunk chunk, List<Vertex> vertices, int x, int y, int z, int worldX, int worldZ) {
+    private void populateRampVertices(List<Vertex> vertices, int x, int y, int z, Block block) {
         // Check neighboring blocks to determine which faces to cull
-        boolean top = isSolid(worldX, y + 1, worldZ, FaceType.TOP);
-        boolean bot = isSolid(worldX, y - 1, worldZ, FaceType.BOTTOM);
-//        boolean lef = isSolid(worldX - 1, y, worldZ, FaceType.LEFT);
-        boolean rig = isSolid(worldX + 1, y, worldZ, FaceType.RIGHT);
-//        boolean fro = isSolid(worldX, y, worldZ - 1, FaceType.FRONT);
-        boolean bac = isSolid(worldX, y, worldZ + 1, FaceType.BACK);
+        boolean top = isSolid(block.getWorldX(), y + 1, block.getWorldZ());
+        boolean bot = isSolid(block.getWorldX(), y - 1, block.getWorldZ());
+//        boolean lef = isSolid(worldX - 1, y, worldZ);
+        boolean rig = isSolid(block.getWorldX() + 1, y, block.getWorldZ());
+//        boolean fro = isSolid(worldX, y, worldZ - 1);
+        boolean bac = isSolid(block.getWorldX(), y, block.getWorldZ() + 1);
 
         // Scale the worldX and worldZ by QUAD_SIZE to avoid overlap
-        float renderX = (x * QUAD_WIDTH) + (CHUNK_XYZ_LENGTH * chunk.getChunkX() * QUAD_WIDTH);
+        float renderX = x * QUAD_WIDTH;
         float renderY = y * QUAD_HEIGHT;
-        float renderZ = (z * QUAD_WIDTH) + (CHUNK_XYZ_LENGTH * chunk.getChunkZ() * QUAD_WIDTH);
+        float renderZ = z * QUAD_WIDTH;
 
-        if (!top) voxelRamp.createTop(vertices, renderX, renderY, renderZ, topRegion);
-        if (!bot) voxelRamp.createBottom(vertices, renderX, renderY, renderZ, bottomRegion);
-        if (!rig) voxelRamp.createRight(vertices, renderX, renderY, renderZ, rightRegion);
-        if (!bac) voxelRamp.createBack(vertices, renderX, renderY, renderZ, backRegion);
-        voxelRamp.createDiagonal(vertices, renderX, renderY, renderZ, leftRegion);
+        if (!top) voxelRamp.createTop(vertices, renderX, renderY, renderZ, block.getTopRegion());
+        if (!bot) voxelRamp.createBottom(vertices, renderX, renderY, renderZ, block.getBottomRegion());
+        if (!rig) voxelRamp.createRight(vertices, renderX, renderY, renderZ, block.getRightRegion());
+        if (!bac) voxelRamp.createBack(vertices, renderX, renderY, renderZ, block.getBackRegion());
+        voxelRamp.createDiagonal(vertices, renderX, renderY, renderZ, block.getLeftRegion());
     }
 
     private void generateIndices(List<Vertex> allVertices, List<Vertex> uniqueVertices, List<Integer> indices) {
@@ -189,12 +169,12 @@ public class ChunkMeshGenerator {
         return mesh;
     }
 
-    private boolean isSolid(int worldX, int worldY, int worldZ, FaceType faceType) {
+    private boolean isSolid(int worldX, int worldY, int worldZ) {
         if (worldY < 0) return false;
-        if (worldY >= WORLD_HEIGHT) return false;
+        if (worldY >= chunkManager.worldHeight) return false;
 
-        int chunkX = (int) Math.floor(worldX / (float) CHUNK_XYZ_LENGTH);
-        int chunkZ = (int) Math.floor(worldZ / (float) CHUNK_XYZ_LENGTH);
+        int chunkX = (int) Math.floor(worldX / (float) CHUNK_SIZE);
+        int chunkZ = (int) Math.floor(worldZ / (float) CHUNK_SIZE);
         Chunk chunk = chunkManager.getChunk(chunkX, chunkZ);
         if (chunk == null) return false;
 
