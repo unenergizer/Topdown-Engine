@@ -45,27 +45,29 @@ public class ChunkMeshGenerator {
     }
 
     private void populateVertices(Chunk chunk, List<Vertex> vertices) {
-        // Populate the vertices array with data
-        for (int y = 0; y < chunk.getHeight()*CHUNK_SIZE; y++) {
+        //Populate the vertices array with data
+        for (int chunkSection = 0; chunkSection < chunk.getHeight(); chunkSection++) {
+            int chunkSectionOffset = chunkSection * CHUNK_SIZE;
             for (int x = 0; x < CHUNK_SIZE; x++) {
                 for (int z = 0; z < CHUNK_SIZE; z++) {
+                    for (int y = 0; y < CHUNK_SIZE; y++) {
+                        Block volume = chunk.getLocalChunkBlock(x, y, z, chunkSection);
+                        if (volume == null) continue;
 
-                    Block block = chunkManager.getWorldChunkBlock(x + CHUNK_SIZE * chunk.getChunkX(), y, z + CHUNK_SIZE * chunk.getChunkZ());
-                    if (block == null) continue;
+                        BlockType blockType = volume.getBlockType();
+                        if (blockType == BlockType.AIR) continue;
 
-                    BlockType blockType = block.getBlockType();
-                    if (blockType == BlockType.AIR) continue;
-
-                    switch (blockType) {
-                        case BLOCK:
-                            populateBlockVertices(vertices, x, y, z, block);
-                            break;
-                        case TRIANGULAR_PRISM_45:
-                        case TRIANGULAR_PRISM_135:
-                        case TRIANGULAR_PRISM_255:
-                        case TRIANGULAR_PRISM_315:
-                            populateRampVertices(vertices, x, y, z, block);
-                            break;
+                        switch (blockType) {
+                            case BLOCK:
+                                populateBlockVertices(vertices, x, y + chunkSectionOffset, z, volume);
+                                break;
+                            case TRIANGULAR_PRISM_45:
+                            case TRIANGULAR_PRISM_135:
+                            case TRIANGULAR_PRISM_255:
+                            case TRIANGULAR_PRISM_315:
+                                populateRampVertices(vertices, x, y + chunkSectionOffset, z, volume);
+                                break;
+                        }
                     }
                 }
             }
@@ -173,12 +175,7 @@ public class ChunkMeshGenerator {
         if (worldY < 0) return false;
         if (worldY >= chunkManager.worldHeight) return false;
 
-        int chunkX = (int) Math.floor(worldX / (float) CHUNK_SIZE);
-        int chunkZ = (int) Math.floor(worldZ / (float) CHUNK_SIZE);
-        Chunk chunk = chunkManager.getChunk(chunkX, chunkZ);
-        if (chunk == null) return false;
-
-        Block block = chunk.getWorldChunkBlock(worldX, worldY, worldZ);
+        Block block = chunkManager.getWorldChunkBlock(worldX, worldY, worldZ);
         if (block == null) return false;
 
         BlockType blockType = block.getBlockType();

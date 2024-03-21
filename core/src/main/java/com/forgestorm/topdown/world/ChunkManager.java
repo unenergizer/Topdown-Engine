@@ -104,7 +104,6 @@ public class ChunkManager implements Disposable {
 
                 //Fill chunk with blocks
                 for (int chunkSection = 0; chunkSection < height; chunkSection++) {
-                    System.out.println("Section " + chunkSection);
                     for (int x = 0; x < CHUNK_SIZE; x++) {
                         for (int z = 0; z < CHUNK_SIZE; z++) {
                             for (int y = 0; y < CHUNK_SIZE; y++) {
@@ -127,7 +126,10 @@ public class ChunkManager implements Disposable {
         int chunkZ = (int) Math.floor(worldZ / (float) CHUNK_SIZE);
 
         Chunk chunk = getChunk(chunkX, chunkZ);
-        return chunk.getWorldChunkBlock(worldX, worldY, worldZ);
+
+        if (chunk != null)
+            return chunk.getWorldChunkBlock(worldX, worldY, worldZ);
+        else return null;
     }
 
     public void setWorldChunkBlock(int worldX, int worldY, int worldZ) {

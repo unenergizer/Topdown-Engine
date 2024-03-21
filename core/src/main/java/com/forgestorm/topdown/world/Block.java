@@ -58,11 +58,11 @@ public class Block {
     public int getWorldX() {
         return chunkX * CHUNK_SIZE + localX;
     }
-    public int getWorldY() {
-        return chunkZ * CHUNK_SIZE + localY;
-    }
     public int getWorldZ() {
-        return chunkSection * CHUNK_SIZE + localZ;
+        return chunkZ * CHUNK_SIZE + localZ;
+    }
+    public int getWorldY() {
+        return chunkSection * CHUNK_SIZE + localY;
     }
 
     @Override
