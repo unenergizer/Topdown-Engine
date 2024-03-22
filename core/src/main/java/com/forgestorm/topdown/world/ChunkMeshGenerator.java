@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -188,5 +189,31 @@ public class ChunkMeshGenerator {
         if (blockType == BlockType.AIR) return false;
         if (blockType == BlockType.TRIANGULAR_PRISM_315) return false;
         return true;
+    }
+
+    //We keep these around so that we don't create lots of garbage for each calculation
+    private static final Vector3 cacheA = new Vector3();
+    private static final Vector3 cacheB = new Vector3();
+    public static Vector3 generateNormals(Vertex p2, Vertex p1, Vertex p3) {
+        Vector3 normal = new Vector3();
+        cacheA.set(p2.getX()- p1.getX(), p2.getY()- p1.getY(), p2.getZ()- p1.getZ());
+        cacheB.set(p3.getX()- p1.getX(), p3.getY()- p1.getY(), p3.getZ()- p1.getZ());
+        normal.set(
+            cacheA.y * cacheB.z - cacheA.z * cacheB.y,
+            cacheA.z * cacheB.x - cacheA.x * cacheB.z,
+            cacheA.x * cacheB.y - cacheA.y * cacheB.x
+        );
+
+        p1.setNx(normal.x);
+        p1.setNy(normal.y);
+        p1.setNz(normal.z);
+        p2.setNx(normal.x);
+        p2.setNy(normal.y);
+        p2.setNz(normal.z);
+        p3.setNx(normal.x);
+        p3.setNy(normal.y);
+        p3.setNz(normal.z);
+
+        return normal;
     }
 }

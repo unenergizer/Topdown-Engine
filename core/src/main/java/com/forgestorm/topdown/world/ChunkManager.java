@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import static com.badlogic.gdx.graphics.GL20.GL_CULL_FACE;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_TEST;
 import static com.forgestorm.topdown.GameConstants.Chunk.*;
 import static com.forgestorm.topdown.Main.loadShader;
@@ -56,6 +57,7 @@ public class ChunkManager implements Disposable {
 
     public void draw(Camera cam) {
         Gdx.gl.glEnable(GL_DEPTH_TEST);
+        //Gdx.gl.glEnable(GL_CULL_FACE);
 
         //Draw the mesh here using renderer camera
         for (Chunk chunk : getChunks()) {
@@ -69,11 +71,13 @@ public class ChunkManager implements Disposable {
                 shaderProgram.bind();
                 shaderProgram.setUniformi("u_texture", 0);
                 shaderProgram.setUniformMatrix("u_projTrans", cam.combined);
-                shaderProgram.setUniformf("u_modelPos", new Vector3(CHUNK_SIZE * chunk.getChunkX() * QUAD_WIDTH,CHUNK_SIZE * chunk.getChunkSections()[i].getChunkY() * QUAD_HEIGHT,distort(CHUNK_SIZE * chunk.getChunkZ() * QUAD_WIDTH)));
+                shaderProgram.setUniformf("u_lightPos", cam.position);
+                shaderProgram.setUniformf("u_modelPos", new Vector3(CHUNK_SIZE * chunk.getChunkX(), distort(CHUNK_SIZE * chunk.getChunkSections()[i].getChunkY()), distort(CHUNK_SIZE * chunk.getChunkZ())));
                 mesh.render(shaderProgram, GL32.GL_TRIANGLES);
             }
         }
 
+        //Gdx.gl.glDisable(GL_CULL_FACE);
         Gdx.gl.glDisable(GL_DEPTH_TEST);
     }
 

@@ -1,17 +1,25 @@
 package com.forgestorm.topdown.world;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
-@AllArgsConstructor
 public class Vertex {
 
     private float x, y, z;
     private float u, v;
+    @Setter
     private float nx, ny, nz;
+
+    public Vertex(float x, float y, float z, float u, float v) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.u = u;
+        this.v = v;
+    }
 
     @Override
     public boolean equals(Object obj) {

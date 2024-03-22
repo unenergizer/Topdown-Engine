@@ -26,11 +26,11 @@ public class GameConstants {
         /**
          * The length and width of a quad in meters. Should match tile size in pixels
          */
-        public static final float QUAD_WIDTH = 16f;
+        public static final float QUAD_WIDTH = 1f;
         /**
          * The height of a quad in meters.
          */
-        public static final float QUAD_HEIGHT = 16f;
+        public static final float QUAD_HEIGHT = 1f;
     }
 
     public static class Text {
