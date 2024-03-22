@@ -38,7 +38,7 @@ public class ChunkManager implements Disposable {
 
         this.width = 5;
         this.depth = 5;
-        this.height = 2;
+        this.height = 5;
         this.worldHeight = height*CHUNK_SIZE;
 
         makeTestChunks(width, depth, height);
@@ -49,7 +49,7 @@ public class ChunkManager implements Disposable {
 
     public void generateAllMeshes() {
         for (Chunk chunk : getChunks()) {
-            //System.out.println("Generating Chunk Mesh: " + chunk);
+            System.out.println("Generating Chunk Mesh: " + chunk);
             chunkMeshGenerator.generateChunkMesh(chunk);
         }
     }
@@ -59,17 +59,19 @@ public class ChunkManager implements Disposable {
 
         //Draw the mesh here using renderer camera
         for (Chunk chunk : getChunks()) {
-            Mesh mesh = chunk.getChunkMesh();
-            if (mesh == null) {
-                continue;
-            }
+            for (int i = 0; i < chunk.getChunkSections().length; i++) {
+                Mesh mesh = chunk.getChunkSections()[i].getChunkMesh();
+                if (mesh == null) {
+                    continue;
+                }
 
-            texture.bind();
-            shaderProgram.bind();
-            shaderProgram.setUniformi("u_texture", 0);
-            shaderProgram.setUniformMatrix("u_projTrans", cam.combined);
-            shaderProgram.setUniformf("u_modelPos", new Vector3(CHUNK_SIZE * chunk.getChunkX() * QUAD_WIDTH,0,distort(CHUNK_SIZE * chunk.getChunkZ() * QUAD_WIDTH)));
-            mesh.render(shaderProgram, GL32.GL_TRIANGLES);
+                texture.bind();
+                shaderProgram.bind();
+                shaderProgram.setUniformi("u_texture", 0);
+                shaderProgram.setUniformMatrix("u_projTrans", cam.combined);
+                shaderProgram.setUniformf("u_modelPos", new Vector3(CHUNK_SIZE * chunk.getChunkX() * QUAD_WIDTH,CHUNK_SIZE * chunk.getChunkSections()[i].getChunkY() * QUAD_HEIGHT,distort(CHUNK_SIZE * chunk.getChunkZ() * QUAD_WIDTH)));
+                mesh.render(shaderProgram, GL32.GL_TRIANGLES);
+            }
         }
 
         Gdx.gl.glDisable(GL_DEPTH_TEST);
@@ -97,7 +99,6 @@ public class ChunkManager implements Disposable {
         // TESTING:
         for (int chunkX = 0; chunkX < width; chunkX++) {
             for (int chunkZ = 0; chunkZ < depth; chunkZ++) {
-                System.out.println("chunk " + chunkX + " " + chunkZ);
                 //Create chunk
                 Chunk chunk = new Chunk(chunkX, chunkZ, height);
                 setChunk(chunk);
@@ -153,8 +154,11 @@ public class ChunkManager implements Disposable {
         chunkConcurrentMap.put(getChunkHashCode(chunk.getChunkX(), chunk.getChunkZ()), chunk);
     }
 
+    /**
+     * This limits the number of chunks that can be stored in the manager to 1024, this can be changed if needed
+     */
     private int getChunkHashCode(int chunkX, int chunkZ) {
-        return chunkX * 31 + chunkZ;
+        return chunkX * 1024 + chunkZ;
     }
 
     public Collection<Chunk> getChunks() {

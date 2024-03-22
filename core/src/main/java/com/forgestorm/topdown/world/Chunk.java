@@ -12,10 +12,8 @@ public class Chunk implements Disposable {
 
     @Getter
     private final int chunkX, chunkZ, height;
-    private final ChunkSection[] chunkSections;
     @Getter
-    @Setter
-    private Mesh chunkMesh;
+    private final ChunkSection[] chunkSections;
 
     public Chunk(int chunkX, int chunkZ, int height) {
         this.chunkX = chunkX;
@@ -67,6 +65,8 @@ public class Chunk implements Disposable {
 
     @Override
     public void dispose() {
-        if (chunkMesh != null) chunkMesh.dispose();
+        for (ChunkSection chunkSection : chunkSections) {
+            chunkSection.dispose();
+        }
     }
 }

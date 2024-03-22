@@ -1,14 +1,21 @@
 package com.forgestorm.topdown.world;
 
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.utils.Disposable;
 import lombok.Getter;
+import lombok.Setter;
 
 import static com.forgestorm.topdown.GameConstants.Chunk.*;
 
-public class ChunkSection {
+public class ChunkSection implements Disposable {
 
     @Getter
     private final int chunkX, chunkZ, chunkY;
     private final Block[] blocks;
+
+    @Getter
+    @Setter
+    private Mesh chunkMesh;
 
     public ChunkSection(int chunkX, int chunkZ, int chunkY) {
         this.chunkX = chunkX;
@@ -47,5 +54,10 @@ public class ChunkSection {
             throw new IllegalArgumentException("Block coordinates out of chunk bounds!");
         }
         return (localZ << MAX_Z_INDEX) | (localY << MAX_Y_INDEX) | localX;
+    }
+
+    @Override
+    public void dispose() {
+        if (chunkMesh != null) chunkMesh.dispose();
     }
 }

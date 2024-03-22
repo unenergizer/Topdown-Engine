@@ -1,5 +1,6 @@
 package com.forgestorm.topdown.world;
 
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -29,45 +30,46 @@ public class ChunkMeshGenerator {
     public void generateChunkMesh(Chunk chunk) {
         System.out.println(chunk);
 
-        // Generate vertices
-        List<Vertex> allVertices = new ArrayList<>();
-        populateVertices(chunk, allVertices);
+        for (int i = 0; i < chunk.getChunkSections().length; i++) {
+            ChunkSection chunkSection = chunk.getChunkSections()[i];
 
-        // Generate indices
-        List<Vertex> uniqueVertices = new ArrayList<>();
-        List<Integer> indices = new ArrayList<>();
-        generateIndices(allVertices, uniqueVertices, indices);
+            // Generate vertices
+            List<Vertex> allVertices = new ArrayList<>();
+            populateVertices(chunkSection, allVertices);
 
-        System.out.println("AllVertices: " + allVertices.size() + ", UniqueVertices: " + uniqueVertices.size() + ", Indices: " + indices.size());
+            // Generate indices
+            List<Vertex> uniqueVertices = new ArrayList<>();
+            List<Integer> indices = new ArrayList<>();
+            generateIndices(allVertices, uniqueVertices, indices);
 
-        // Create the mesh
-        chunk.setChunkMesh(createMesh(uniqueVertices, indices));
+            System.out.println("AllVertices: " + allVertices.size() + ", UniqueVertices: " + uniqueVertices.size() + ", Indices: " + indices.size());
+
+            // Create the mesh
+            chunkSection.setChunkMesh(createMesh(uniqueVertices, indices));
+        }
     }
 
-    private void populateVertices(Chunk chunk, List<Vertex> vertices) {
+    private void populateVertices(ChunkSection chunkSection, List<Vertex> vertices) {
         //Populate the vertices array with data
-        for (int chunkSection = 0; chunkSection < chunk.getHeight(); chunkSection++) {
-            int chunkSectionOffset = chunkSection * CHUNK_SIZE;
-            for (int x = 0; x < CHUNK_SIZE; x++) {
-                for (int z = 0; z < CHUNK_SIZE; z++) {
-                    for (int y = 0; y < CHUNK_SIZE; y++) {
-                        Block volume = chunk.getLocalChunkBlock(x, y, z, chunkSection);
-                        if (volume == null) continue;
+        for (int x = 0; x < CHUNK_SIZE; x++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                for (int y = 0; y < CHUNK_SIZE; y++) {
+                    Block volume = chunkSection.getLocalChunkBlock(x, y, z);
+                    if (volume == null) continue;
 
-                        BlockType blockType = volume.getBlockType();
-                        if (blockType == BlockType.AIR) continue;
+                    BlockType blockType = volume.getBlockType();
+                    if (blockType == BlockType.AIR) continue;
 
-                        switch (blockType) {
-                            case BLOCK:
-                                populateBlockVertices(vertices, x, y + chunkSectionOffset, z, volume);
-                                break;
-                            case TRIANGULAR_PRISM_45:
-                            case TRIANGULAR_PRISM_135:
-                            case TRIANGULAR_PRISM_255:
-                            case TRIANGULAR_PRISM_315:
-                                populateRampVertices(vertices, x, y + chunkSectionOffset, z, volume);
-                                break;
-                        }
+                    switch (blockType) {
+                        case BLOCK:
+                            populateBlockVertices(vertices, x, y, z, volume);
+                            break;
+                        case TRIANGULAR_PRISM_45:
+                        case TRIANGULAR_PRISM_135:
+                        case TRIANGULAR_PRISM_255:
+                        case TRIANGULAR_PRISM_315:
+                            populateRampVertices(vertices, x, y, z, volume);
+                            break;
                     }
                 }
             }
@@ -76,6 +78,7 @@ public class ChunkMeshGenerator {
 
     private void populateBlockVertices(List<Vertex> vertices, int x, int y, int z, Block block) {
         // Check neighboring blocks to determine which faces to cull
+        //TODO make the sides not visible in 2D view toggle
         boolean top = isSolid(block.getWorldX(), block.getWorldY() + 1, block.getWorldZ());
         boolean bot = isSolid(block.getWorldX(), block.getWorldY() - 1, block.getWorldZ());
         boolean lef = isSolid(block.getWorldX() - 1, block.getWorldY(), block.getWorldZ());
@@ -138,11 +141,14 @@ public class ChunkMeshGenerator {
 
     private Mesh createMesh(List<Vertex> uniqueVertices, List<Integer> indices) {
         // Define the attributes for this model
-        VertexAttribute position = new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE);
-        VertexAttribute textureCoordinates = new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0");
-        VertexAttribute normal = new VertexAttribute(VertexAttributes.Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE);
+        int positionComponents = 3;
+        int textureCoordinatesComponents = 2;
+        int normalComponents = 3;
 
-        int numberComponents = (position.numComponents + normal.numComponents + textureCoordinates.numComponents);
+        //We will replace with converted mesh after we split chunk sections into separate meshes
+        //VertexAttribute test = new VertexAttribute(VertexAttributes.Usage.Generic, 1, GL20.GL_INT, false, "a_data");
+
+        int numberComponents = (positionComponents + textureCoordinatesComponents + normalComponents);
 
         // Convert to libgdx mesh
         float[] verticesArray = new float[uniqueVertices.size() * numberComponents]; // Assuming 3 floats per vertex
@@ -164,7 +170,7 @@ public class ChunkMeshGenerator {
             indicesArray[i] = indices.get(i).shortValue(); // Cast to short if necessary
         }
 
-        Mesh mesh = new Mesh(true, verticesArray.length, indicesArray.length, position, textureCoordinates, normal);
+        Mesh mesh = new Mesh(true, verticesArray.length, indicesArray.length, VertexAttribute.Position(), VertexAttribute.TexCoords(0), VertexAttribute.Normal());
         mesh.setVertices(verticesArray);
         mesh.setIndices(indicesArray);
 
