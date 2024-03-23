@@ -8,17 +8,30 @@ import java.util.Objects;
 @Getter
 public class Vertex {
 
-    private float x, y, z;
+    private int x, y, z;
     private float u, v;
     @Setter
     private float nx, ny, nz;
 
-    public Vertex(float x, float y, float z, float u, float v) {
+    private float combined;
+
+    public Vertex(int x, int y, int z, float u, float v) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.u = u;
         this.v = v;
+
+        //Because each pos is less than or equal to 16 we need 5 bits for each
+        //That takes up 15 bits leaving us with 17 more
+        //*****************XXXXXYYYYYZZZZZ
+
+        combined = 0;
+
+        //Set X
+        combined += x << 10;
+        combined += y << 5;
+        combined += z;
     }
 
     @Override

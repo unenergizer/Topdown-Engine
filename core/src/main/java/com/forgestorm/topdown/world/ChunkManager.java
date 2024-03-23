@@ -12,13 +12,11 @@ import com.badlogic.gdx.utils.Disposable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import static com.badlogic.gdx.graphics.GL20.GL_CULL_FACE;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_TEST;
 import static com.forgestorm.topdown.GameConstants.Chunk.*;
 import static com.forgestorm.topdown.Main.loadShader;
-import static com.forgestorm.topdown.world.Vertex.max;
 
 public class ChunkManager implements Disposable {
     private final Map<Integer, Chunk> chunkConcurrentMap = new HashMap<>();
