@@ -10,12 +10,17 @@ varying vec3 v_normal;
 varying vec3 v_fragPos;
 varying vec3 v_lightPos;
 
+float distort(float val) {
+    float sqrtOfTwo = 1.4142135624;
+    return val + (val * (sqrtOfTwo - 1.0));
+}
+
 void main() {
     v_texCoords = a_texCoord0;
     v_normal = a_normal;
 
     vec4 pos = a_position + vec4(u_modelPos, 0.0);
-    pos *= vec4(16.0, 16.0, 16.0, 1);
+    pos *= vec4(16.0, distort(16.0), distort(16.0), 1);
 
     v_fragPos = vec3(a_position + vec4(u_modelPos, 0.0));
     v_lightPos = u_lightPos / 16.0;

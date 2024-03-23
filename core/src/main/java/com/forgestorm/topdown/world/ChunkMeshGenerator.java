@@ -16,8 +16,8 @@ import static com.forgestorm.topdown.GameConstants.Chunk.*;
 
 public class ChunkMeshGenerator {
 
-    private final VoxelCube voxelCube = new VoxelCube(true);
-    private final VoxelRamp voxelRamp = new VoxelRamp(true);
+    private final VoxelCube voxelCube = new VoxelCube();
+    private final VoxelRamp voxelRamp = new VoxelRamp();
 
     private final ChunkManager chunkManager;
 
@@ -87,17 +87,12 @@ public class ChunkMeshGenerator {
         boolean fro = isSolid(block.getWorldX(), block.getWorldY(), block.getWorldZ() - 1);
         boolean bac = isSolid(block.getWorldX(), block.getWorldY(), block.getWorldZ() + 1);
 
-        // Scale the worldX and worldZ by QUAD_SIZE to avoid overlap
-        float renderX = x * QUAD_WIDTH;
-        float renderY = y * QUAD_HEIGHT;
-        float renderZ = z * QUAD_WIDTH;
-
-        if (!top) voxelCube.createTop(vertices, renderX, renderY, renderZ, block.getTopRegion());
-        if (!bot) voxelCube.createBottom(vertices, renderX, renderY, renderZ, block.getBottomRegion());
-        if (!lef) voxelCube.createLeft(vertices, renderX, renderY, renderZ, block.getLeftRegion());
-        if (!rig) voxelCube.createRight(vertices, renderX, renderY, renderZ, block.getRightRegion());
-        if (!fro) voxelCube.createFront(vertices, renderX, renderY, renderZ, block.getFrontRegion());
-        if (!bac) voxelCube.createBack(vertices, renderX, renderY, renderZ, block.getBackRegion());
+        if (!top) voxelCube.createTop(vertices, x, y, z, block.getTopRegion());
+        if (!bot) voxelCube.createBottom(vertices, x, y, z, block.getBottomRegion());
+        if (!lef) voxelCube.createLeft(vertices, x, y, z, block.getLeftRegion());
+        if (!rig) voxelCube.createRight(vertices, x, y, z, block.getRightRegion());
+        if (!fro) voxelCube.createFront(vertices, x, y, z, block.getFrontRegion());
+        if (!bac) voxelCube.createBack(vertices, x, y, z, block.getBackRegion());
     }
 
     private void populateRampVertices(List<Vertex> vertices, int x, int y, int z, Block block) {
@@ -109,16 +104,11 @@ public class ChunkMeshGenerator {
 //        boolean fro = isSolid(worldX, y, worldZ - 1);
         boolean bac = isSolid(block.getWorldX(), y, block.getWorldZ() + 1);
 
-        // Scale the worldX and worldZ by QUAD_SIZE to avoid overlap
-        float renderX = x * QUAD_WIDTH;
-        float renderY = y * QUAD_HEIGHT;
-        float renderZ = z * QUAD_WIDTH;
-
-        if (!top) voxelRamp.createTop(vertices, renderX, renderY, renderZ, block.getTopRegion());
-        if (!bot) voxelRamp.createBottom(vertices, renderX, renderY, renderZ, block.getBottomRegion());
-        if (!rig) voxelRamp.createRight(vertices, renderX, renderY, renderZ, block.getRightRegion());
-        if (!bac) voxelRamp.createBack(vertices, renderX, renderY, renderZ, block.getBackRegion());
-        voxelRamp.createDiagonal(vertices, renderX, renderY, renderZ, block.getLeftRegion());
+        if (!top) voxelRamp.createTop(vertices, x, y, z, block.getTopRegion());
+        if (!bot) voxelRamp.createBottom(vertices, x, y, z, block.getBottomRegion());
+        if (!rig) voxelRamp.createRight(vertices, x, y, z, block.getRightRegion());
+        if (!bac) voxelRamp.createBack(vertices, x, y, z, block.getBackRegion());
+        voxelRamp.createDiagonal(vertices, x, y, z, block.getLeftRegion());
     }
 
     private void generateIndices(List<Vertex> allVertices, List<Vertex> uniqueVertices, List<Integer> indices) {

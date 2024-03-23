@@ -18,7 +18,7 @@ import static com.badlogic.gdx.graphics.GL20.GL_CULL_FACE;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_TEST;
 import static com.forgestorm.topdown.GameConstants.Chunk.*;
 import static com.forgestorm.topdown.Main.loadShader;
-import static com.forgestorm.topdown.OrthographicPerspectiveRenderer.distort;
+import static com.forgestorm.topdown.world.Vertex.max;
 
 public class ChunkManager implements Disposable {
     private final Map<Integer, Chunk> chunkConcurrentMap = new HashMap<>();
@@ -72,7 +72,7 @@ public class ChunkManager implements Disposable {
                 shaderProgram.setUniformi("u_texture", 0);
                 shaderProgram.setUniformMatrix("u_projTrans", cam.combined);
                 shaderProgram.setUniformf("u_lightPos", cam.position);
-                shaderProgram.setUniformf("u_modelPos", new Vector3(CHUNK_SIZE * chunk.getChunkX(), distort(CHUNK_SIZE * chunk.getChunkSections()[i].getChunkY()), distort(CHUNK_SIZE * chunk.getChunkZ())));
+                shaderProgram.setUniformf("u_modelPos", new Vector3(CHUNK_SIZE * chunk.getChunkX(), CHUNK_SIZE * chunk.getChunkSections()[i].getChunkY(),CHUNK_SIZE * chunk.getChunkZ()));
                 mesh.render(shaderProgram, GL32.GL_TRIANGLES);
             }
         }

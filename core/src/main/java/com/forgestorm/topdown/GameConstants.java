@@ -23,21 +23,9 @@ public class GameConstants {
          * Cumulative bits of Y. Used in {@link com.forgestorm.topdown.world.ChunkSection}
          */
         public static final int MAX_Z_INDEX = MAX_Y_INDEX + (int) (Math.log(CHUNK_SIZE) / Math.log(2));
-        /**
-         * The length and width of a quad in meters. Should match tile size in pixels
-         */
-        public static final float QUAD_WIDTH = 1f;
-        /**
-         * The height of a quad in meters.
-         */
-        public static final float QUAD_HEIGHT = 1f;
     }
 
     public static class Text {
         public static final String SLASH = "/";
-    }
-
-    public static float distort(float value) {
-        return value + (value * ((float) Math.sqrt(2) - 1f));
     }
 }
