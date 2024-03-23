@@ -30,10 +30,10 @@ public class VoxelCube {
         Vertex b = new Vertex(x + QUAD_WIDTH, distort(y + QUAD_HEIGHT), distort(z), u2, v1);
         Vertex c = new Vertex(x, distort(y + QUAD_HEIGHT), distort(z + QUAD_WIDTH), u1, v2);
 
-        // Triangle 2
+        // Triangle 2 wrong dir
         Vertex a2 = new Vertex(x, distort(y + QUAD_HEIGHT), distort(z), u1, v1);
-        Vertex b2 = new Vertex(x + QUAD_WIDTH, distort(y + QUAD_HEIGHT), distort(z), u2, v1);
-        Vertex c2 = new Vertex(x, distort(y + QUAD_HEIGHT), distort(z + QUAD_WIDTH), u1, v2);
+        Vertex b2 = new Vertex(x, distort(y + QUAD_HEIGHT), distort(z + QUAD_WIDTH), u1, v2);
+        Vertex c2 = new Vertex(x + QUAD_WIDTH, distort(y + QUAD_HEIGHT), distort(z), u2, v1);
 
         generateNormals(b,a,c);
         generateNormals(b2,a2,c2);
