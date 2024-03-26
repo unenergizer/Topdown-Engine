@@ -136,10 +136,13 @@ public class ChunkMeshGenerator {
         int textureCoordinatesComponents = 2;
         int normalComponents = 3;
 
-        //We will replace with converted mesh after we split chunk sections into separate meshes
-        //VertexAttribute test = new VertexAttribute(VertexAttributes.Usage.Generic, 1, GL20.GL_INT, false, "a_data");
+        boolean testData = false;
+        int CustomComponents = testData? 1: 0;
 
-        int numberComponents = (positionComponents + textureCoordinatesComponents + normalComponents);
+        //We will replace with converted mesh after we split chunk sections into separate meshes
+        VertexAttribute test = new VertexAttribute(VertexAttributes.Usage.Generic, 1, GL20.GL_FLOAT, false, "a_data");
+
+        int numberComponents = (positionComponents + textureCoordinatesComponents + normalComponents + CustomComponents);
 
         // Convert to libgdx mesh
         float[] verticesArray = new float[uniqueVertices.size() * numberComponents]; // Assuming 3 floats per vertex
@@ -155,13 +158,19 @@ public class ChunkMeshGenerator {
             verticesArray[i++] = vertex.getNx();
             verticesArray[i++] = vertex.getNy();
             verticesArray[i++] = vertex.getNz();
+            if (testData)
+                verticesArray[i++] = vertex.getCombined();
         }
 
         for (i = 0; i < indices.size(); i++) {
             indicesArray[i] = indices.get(i).shortValue(); // Cast to short if necessary
         }
 
-        Mesh mesh = new Mesh(true, verticesArray.length, indicesArray.length, VertexAttribute.Position(), VertexAttribute.TexCoords(0), VertexAttribute.Normal());
+        Mesh mesh;
+        if (testData)
+            mesh = new Mesh(true, verticesArray.length, indicesArray.length, VertexAttribute.Position(), VertexAttribute.TexCoords(0), VertexAttribute.Normal(), test);
+        else
+            mesh = new Mesh(true, verticesArray.length, indicesArray.length, VertexAttribute.Position(), VertexAttribute.TexCoords(0), VertexAttribute.Normal());
         mesh.setVertices(verticesArray);
         mesh.setIndices(indicesArray);
 
