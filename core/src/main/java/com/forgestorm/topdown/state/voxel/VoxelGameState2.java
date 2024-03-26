@@ -90,24 +90,6 @@ public class VoxelGameState2 implements GameState {
             if (!rendering2D)
                 renderer.createFrustumMesh(); //Create a new mesh for the cameras position at time of switch
         }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            int a_data = 0;
-
-            int x = 13;
-            int y = 4;
-            int z = 16;
-
-            //Set X
-            a_data += x << 10;
-            a_data += y << 5;
-            a_data += z;
-
-            System.out.println("X " + ((a_data >> 10) & 31));
-            System.out.println("Y " + ((a_data >> 5) & 31));
-            System.out.println("Z " + (a_data & 31));
-
-        }
     }
 
     /**
