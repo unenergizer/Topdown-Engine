@@ -4,6 +4,8 @@ uniform sampler2D u_texture;
 varying vec3 v_fragPos;
 varying vec3 v_lightPos;
 
+varying vec3 v_testBS;
+
 void main() {
     vec4 tgt = texture2D(u_texture, v_texCoords);
 
@@ -16,6 +18,12 @@ void main() {
     vec4 diffuse = diff * lightColor;
 
     vec4 result = (ambiantLight + diffuse) * tgt;
+
+    //Delete here to
+    if (v_testBS.x == 1)
+        result = lightColor;
+    //Here if you are trying to remove the testing code
+    //You should also remove the v_testBS
 
     gl_FragColor = result;
 }

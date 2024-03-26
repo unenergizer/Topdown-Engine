@@ -13,7 +13,7 @@ public class Vertex {
     @Setter
     private float nx, ny, nz;
 
-    private float combined;
+    private int combined;
 
     public Vertex(int x, int y, int z, float u, float v) {
         this.x = x;
