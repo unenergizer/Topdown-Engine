@@ -1,10 +1,7 @@
 package com.forgestorm.topdown.world;
 
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
@@ -65,11 +62,17 @@ public class ChunkMeshGenerator {
                         case BLOCK:
                             populateBlockVertices(vertices, x, y, z, volume);
                             break;
-                        case TRIANGULAR_PRISM_45:
-                        case TRIANGULAR_PRISM_135:
-                        case TRIANGULAR_PRISM_255:
-                        case TRIANGULAR_PRISM_315:
-                            populateRampVertices(vertices, x, y, z, volume);
+                        case TRIANGULAR_PRISM_NE:
+                        case TRIANGULAR_PRISM_SE:
+                        case TRIANGULAR_PRISM_SW:
+                        case TRIANGULAR_PRISM_NW:
+                            populateTriangularPrismVertices(vertices, x, y, z, volume);
+                            break;
+                        case RAMP_N:
+                        case RAMP_E:
+                        case RAMP_S:
+                        case RAMP_W:
+                            populateTriangularPrismVertices(vertices, x, y, z, volume);
                             break;
                     }
                 }
@@ -95,20 +98,61 @@ public class ChunkMeshGenerator {
         if (!bac) voxelCube.createBack(vertices, x, y, z, block.getBackRegion());
     }
 
-    private void populateRampVertices(List<Vertex> vertices, int x, int y, int z, Block block) {
+    private void populateTriangularPrismVertices(List<Vertex> vertices, int x, int y, int z, Block block) {
         // Check neighboring blocks to determine which faces to cull
         boolean top = isSolid(block.getWorldX(), y + 1, block.getWorldZ());
         boolean bot = isSolid(block.getWorldX(), y - 1, block.getWorldZ());
-//        boolean lef = isSolid(worldX - 1, y, worldZ);
-        boolean rig = isSolid(block.getWorldX() + 1, y, block.getWorldZ());
-//        boolean fro = isSolid(worldX, y, worldZ - 1);
-        boolean bac = isSolid(block.getWorldX(), y, block.getWorldZ() + 1);
+        boolean lef = true;
+        boolean rig = true;
+        boolean fro = true;
+        boolean bac = true;
 
-        if (!top) voxelRamp.createTop(vertices, x, y, z, block.getTopRegion());
-        if (!bot) voxelRamp.createBottom(vertices, x, y, z, block.getBottomRegion());
-        if (!rig) voxelRamp.createRight(vertices, x, y, z, block.getRightRegion());
-        if (!bac) voxelRamp.createBack(vertices, x, y, z, block.getBackRegion());
-        voxelRamp.createDiagonal(vertices, x, y, z, block.getLeftRegion());
+        switch (block.getBlockType()) {
+            case TRIANGULAR_PRISM_NE:
+                lef = isSolid(block.getWorldX() - 1, y, block.getWorldZ());
+                bac = isSolid(block.getWorldX(), y, block.getWorldZ() + 1);
+                voxelRamp.createDiagonalNE(vertices, x, y, z, block.getFrontRegion());
+
+                if (!top) voxelRamp.createTopNE(vertices, x, y, z, block.getTopRegion());
+                if (!bot) voxelRamp.createBottomNE(vertices, x, y, z, block.getBottomRegion());
+                if (!lef) voxelCube.createLeft(vertices, x, y, z, block.getLeftRegion());
+                if (!bac) voxelCube.createBack(vertices, x, y, z, block.getBackRegion());
+
+                break;
+            case TRIANGULAR_PRISM_SE:
+                lef = isSolid(block.getWorldX() - 1, y, block.getWorldZ());
+                fro = isSolid(block.getWorldX(), y, block.getWorldZ() - 1);
+                voxelRamp.createDiagonalSE(vertices, x, y, z, block.getBackRegion());
+
+                if (!top) voxelRamp.createTopSE(vertices, x, y, z, block.getTopRegion());
+                if (!bot) voxelRamp.createBottomSE(vertices, x, y, z, block.getBottomRegion());
+                if (!lef) voxelCube.createLeft(vertices, x, y, z, block.getLeftRegion());
+                if (!fro) voxelCube.createFront(vertices, x, y, z, block.getFrontRegion());
+
+                break;
+            case TRIANGULAR_PRISM_SW:
+                rig = isSolid(block.getWorldX() + 1, y, block.getWorldZ());
+                fro = isSolid(block.getWorldX(), y, block.getWorldZ() - 1);
+                voxelRamp.createDiagonalSW(vertices, x, y, z, block.getBackRegion());
+
+                if (!top) voxelRamp.createTopSW(vertices, x, y, z, block.getTopRegion());
+                if (!fro) voxelRamp.createBottomSW(vertices, x, y, z, block.getBottomRegion());
+                if (!rig) voxelCube.createRight(vertices, x, y, z, block.getRightRegion());
+                if (!fro) voxelCube.createFront(vertices, x, y, z, block.getFrontRegion());
+
+                break;
+            case TRIANGULAR_PRISM_NW:
+                rig = isSolid(block.getWorldX() + 1, y, block.getWorldZ());
+                bac = isSolid(block.getWorldX(), y, block.getWorldZ() + 1);
+                voxelRamp.createDiagonalNW(vertices, x, y, z, block.getFrontRegion());
+
+                if (!top) voxelRamp.createTopNW(vertices, x, y, z, block.getTopRegion());
+                if (!bot) voxelRamp.createBottomNW(vertices, x, y, z, block.getBottomRegion());
+                if (!rig) voxelCube.createRight(vertices, x, y, z, block.getRightRegion());
+                if (!bac) voxelCube.createBack(vertices, x, y, z, block.getBackRegion());
+
+                break;
+        }
     }
 
     private void generateIndices(List<Vertex> allVertices, List<Vertex> uniqueVertices, List<Integer> indices) {
@@ -176,9 +220,12 @@ public class ChunkMeshGenerator {
         if (block == null) return false;
 
         BlockType blockType = block.getBlockType();
-        if (blockType == BlockType.AIR) return false;
-        if (blockType == BlockType.TRIANGULAR_PRISM_315) return false;
-        return true;
+        /*
+        We should be checking for ramps and prisms here as well to cull faces.
+        Instead, we do not check them, the culling to work for those shapes they would need more data on if the types match the block adjacent,
+        because of this we will make the easier and less efficient decision to treat ramps the same as AIR.
+         */
+        return blockType == BlockType.BLOCK;
     }
 
     //We keep these around so that we don't create lots of garbage for each calculation

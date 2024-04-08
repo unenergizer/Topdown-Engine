@@ -6,33 +6,14 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum BlockType {
-    AIR(false, false, false, false, false, false),
-    BLOCK(true, true, true,true, true, true),
-    //   |   /
-    //   |  /
-    //   | /
-    //   +------
-    TRIANGULAR_PRISM_45(true, true, true, true, false, true),
-    //     \   |
-    //      \  |
-    //       \ |
-    //   ------+
-    TRIANGULAR_PRISM_135(true, true, false, false, false, false),
-    //   ------+
-    //       / |
-    //      /  |
-    //     /   |
-    TRIANGULAR_PRISM_255(true, true, false, false, false, false),
-    //   +------
-    //   | \
-    //   |  \
-    //   |   \
-    TRIANGULAR_PRISM_315(true, true, false, true, false, true);
-
-    private final boolean visibleTop;
-    private final boolean visibleBottom;
-    private final boolean visibleLeft;
-    private final boolean visibleRight;
-    private final boolean visibleFront;
-    private final boolean visibleBack;
+    AIR(),
+    BLOCK(),
+    TRIANGULAR_PRISM_NE(),
+    TRIANGULAR_PRISM_SE(),
+    TRIANGULAR_PRISM_SW(),
+    TRIANGULAR_PRISM_NW(),
+    RAMP_N(),
+    RAMP_E(),
+    RAMP_S(),
+    RAMP_W();
 }

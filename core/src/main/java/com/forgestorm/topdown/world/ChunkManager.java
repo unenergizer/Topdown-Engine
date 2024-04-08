@@ -113,7 +113,7 @@ public class ChunkManager implements Disposable {
                                 Block volume = chunk.getLocalChunkBlock(x, y, z, chunkSection);
 
                                 if (x*2 + (chunkX + 1) > y && z*2 + (chunkZ + 1) > y)
-                                    volume.setBlockType(BlockType.BLOCK);
+                                    volume.setBlockType(BlockType.TRIANGULAR_PRISM_NE);
                                 else
                                     volume.setBlockType(BlockType.AIR);
                             }
