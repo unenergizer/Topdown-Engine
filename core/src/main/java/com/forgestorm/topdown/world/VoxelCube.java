@@ -44,14 +44,14 @@ public class VoxelCube {
         float v2 = textureRegion.getV2();
 
         // Tri 1
-        Vertex a = new Vertex(x + 1, y, z + 1, u2, v2);
-        Vertex b = new Vertex(x, y, z + 1, u2, v1);
-        Vertex c = new Vertex(x + 1, y, z, u1, v2);
+        Vertex a = new Vertex(x + 1, y, z + 1, u1, v2);
+        Vertex b = new Vertex(x, y, z + 1, u2, v2);
+        Vertex c = new Vertex(x + 1, y, z, u1, v1);
 
         // Tri 2
-        Vertex a2 = new Vertex(x, y, z, u1, v1);
-        Vertex b2 = new Vertex(x + 1, y, z, u1, v2);
-        Vertex c2 = new Vertex(x, y, z + 1, u2, v1);
+        Vertex a2 = new Vertex(x, y, z, u2, v1);
+        Vertex b2 = new Vertex(x + 1, y, z, u1, v1);
+        Vertex c2 = new Vertex(x, y, z + 1, u2, v2);
 
         generateNormals(b,a,c);
         generateNormals(b2,a2,c2);

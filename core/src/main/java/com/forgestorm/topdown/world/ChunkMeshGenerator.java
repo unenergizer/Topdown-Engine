@@ -14,6 +14,7 @@ import static com.forgestorm.topdown.GameConstants.Chunk.*;
 public class ChunkMeshGenerator {
 
     private final VoxelCube voxelCube = new VoxelCube();
+    private final VoxelTriangularPrism voxelTriangularPrism = new VoxelTriangularPrism();
     private final VoxelRamp voxelRamp = new VoxelRamp();
 
     private final ChunkManager chunkManager;
@@ -72,7 +73,7 @@ public class ChunkMeshGenerator {
                         case RAMP_E:
                         case RAMP_S:
                         case RAMP_W:
-                            populateTriangularPrismVertices(vertices, x, y, z, volume);
+                            populateRampVertices(vertices, x, y, z, volume);
                             break;
                     }
                 }
@@ -111,10 +112,10 @@ public class ChunkMeshGenerator {
             case TRIANGULAR_PRISM_NE:
                 lef = isSolid(block.getWorldX() - 1, y, block.getWorldZ());
                 bac = isSolid(block.getWorldX(), y, block.getWorldZ() + 1);
-                voxelRamp.createDiagonalNE(vertices, x, y, z, block.getFrontRegion());
+                voxelTriangularPrism.createDiagonalNE(vertices, x, y, z, block.getFrontRegion());
 
-                if (!top) voxelRamp.createTopNE(vertices, x, y, z, block.getTopRegion());
-                if (!bot) voxelRamp.createBottomNE(vertices, x, y, z, block.getBottomRegion());
+                if (!top) voxelTriangularPrism.createTopNE(vertices, x, y, z, block.getTopRegion());
+                if (!bot) voxelTriangularPrism.createBottomNE(vertices, x, y, z, block.getBottomRegion());
                 if (!lef) voxelCube.createLeft(vertices, x, y, z, block.getLeftRegion());
                 if (!bac) voxelCube.createBack(vertices, x, y, z, block.getBackRegion());
 
@@ -122,10 +123,10 @@ public class ChunkMeshGenerator {
             case TRIANGULAR_PRISM_SE:
                 lef = isSolid(block.getWorldX() - 1, y, block.getWorldZ());
                 fro = isSolid(block.getWorldX(), y, block.getWorldZ() - 1);
-                voxelRamp.createDiagonalSE(vertices, x, y, z, block.getBackRegion());
+                voxelTriangularPrism.createDiagonalSE(vertices, x, y, z, block.getBackRegion());
 
-                if (!top) voxelRamp.createTopSE(vertices, x, y, z, block.getTopRegion());
-                if (!bot) voxelRamp.createBottomSE(vertices, x, y, z, block.getBottomRegion());
+                if (!top) voxelTriangularPrism.createTopSE(vertices, x, y, z, block.getTopRegion());
+                if (!bot) voxelTriangularPrism.createBottomSE(vertices, x, y, z, block.getBottomRegion());
                 if (!lef) voxelCube.createLeft(vertices, x, y, z, block.getLeftRegion());
                 if (!fro) voxelCube.createFront(vertices, x, y, z, block.getFrontRegion());
 
@@ -133,10 +134,10 @@ public class ChunkMeshGenerator {
             case TRIANGULAR_PRISM_SW:
                 rig = isSolid(block.getWorldX() + 1, y, block.getWorldZ());
                 fro = isSolid(block.getWorldX(), y, block.getWorldZ() - 1);
-                voxelRamp.createDiagonalSW(vertices, x, y, z, block.getBackRegion());
+                voxelTriangularPrism.createDiagonalSW(vertices, x, y, z, block.getBackRegion());
 
-                if (!top) voxelRamp.createTopSW(vertices, x, y, z, block.getTopRegion());
-                if (!fro) voxelRamp.createBottomSW(vertices, x, y, z, block.getBottomRegion());
+                if (!top) voxelTriangularPrism.createTopSW(vertices, x, y, z, block.getTopRegion());
+                if (!fro) voxelTriangularPrism.createBottomSW(vertices, x, y, z, block.getBottomRegion());
                 if (!rig) voxelCube.createRight(vertices, x, y, z, block.getRightRegion());
                 if (!fro) voxelCube.createFront(vertices, x, y, z, block.getFrontRegion());
 
@@ -144,15 +145,73 @@ public class ChunkMeshGenerator {
             case TRIANGULAR_PRISM_NW:
                 rig = isSolid(block.getWorldX() + 1, y, block.getWorldZ());
                 bac = isSolid(block.getWorldX(), y, block.getWorldZ() + 1);
-                voxelRamp.createDiagonalNW(vertices, x, y, z, block.getFrontRegion());
+                voxelTriangularPrism.createDiagonalNW(vertices, x, y, z, block.getFrontRegion());
 
-                if (!top) voxelRamp.createTopNW(vertices, x, y, z, block.getTopRegion());
-                if (!bot) voxelRamp.createBottomNW(vertices, x, y, z, block.getBottomRegion());
+                if (!top) voxelTriangularPrism.createTopNW(vertices, x, y, z, block.getTopRegion());
+                if (!bot) voxelTriangularPrism.createBottomNW(vertices, x, y, z, block.getBottomRegion());
                 if (!rig) voxelCube.createRight(vertices, x, y, z, block.getRightRegion());
                 if (!bac) voxelCube.createBack(vertices, x, y, z, block.getBackRegion());
 
                 break;
         }
+    }
+
+    private void populateRampVertices(List<Vertex> vertices, int x, int y, int z, Block block) {
+        // Check neighboring blocks to determine which faces to cull
+        boolean bot = isSolid(block.getWorldX(), y - 1, block.getWorldZ());
+        boolean lef;
+        boolean rig;
+        boolean fro;
+        boolean bac;
+
+        switch (block.getBlockType()) {
+            case RAMP_N:
+                lef = isSolid(block.getWorldX() - 1, y, block.getWorldZ());
+                rig = isSolid(block.getWorldX() + 1, y, block.getWorldZ());
+                bac = isSolid(block.getWorldX(), y, block.getWorldZ() + 1);
+                voxelRamp.createDiagonalN(vertices, x, y, z, block.getFrontRegion());
+
+                if (!lef) voxelRamp.createLeftN(vertices, x, y, z, block.getLeftRegion());
+                if (!rig) voxelRamp.createRightN(vertices, x, y, z, block.getRightRegion());
+                if (!bac) voxelCube.createBack(vertices, x, y, z, block.getTopRegion());
+
+                break;
+            case RAMP_E:
+                fro = isSolid(block.getWorldX(), y, block.getWorldZ() - 1);
+                bac = isSolid(block.getWorldX(), y, block.getWorldZ() + 1);
+                lef = isSolid(block.getWorldX() - 1, y, block.getWorldZ());
+                voxelRamp.createDiagonalE(vertices, x, y, z, block.getTopRegion());
+
+                if (!fro) voxelRamp.createFrontE(vertices, x, y, z, block.getFrontRegion());
+                if (!bac) voxelRamp.createBackE(vertices, x, y, z, block.getBackRegion());
+                if (!lef) voxelCube.createLeft(vertices, x, y, z, block.getLeftRegion());
+
+                break;
+            case RAMP_S:
+                lef = isSolid(block.getWorldX() - 1, y, block.getWorldZ());
+                rig = isSolid(block.getWorldX() + 1, y, block.getWorldZ());
+                fro = isSolid(block.getWorldX(), y, block.getWorldZ() - 1);
+                voxelRamp.createDiagonalS(vertices, x, y, z, block.getTopRegion());
+
+                if (!lef) voxelRamp.createLeftS(vertices, x, y, z, block.getLeftRegion());
+                if (!rig) voxelRamp.createRightS(vertices, x, y, z, block.getRightRegion());
+                if (!fro) voxelCube.createFront(vertices, x, y, z, block.getFrontRegion());
+
+                break;
+            case RAMP_W:
+                fro = isSolid(block.getWorldX(), y, block.getWorldZ() - 1);
+                bac = isSolid(block.getWorldX(), y, block.getWorldZ() + 1);
+                rig = isSolid(block.getWorldX() + 1, y, block.getWorldZ());
+                voxelRamp.createDiagonalW(vertices, x, y, z, block.getTopRegion());
+
+                if (!fro) voxelRamp.createFrontW(vertices, x, y, z, block.getFrontRegion());
+                if (!bac) voxelRamp.createBackW(vertices, x, y, z, block.getBackRegion());
+                if (!rig) voxelCube.createRight(vertices, x, y, z, block.getRightRegion());
+
+                break;
+        }
+
+        if (!bot) voxelCube.createBottom(vertices, x, y, z, block.getBottomRegion());
     }
 
     private void generateIndices(List<Vertex> allVertices, List<Vertex> uniqueVertices, List<Integer> indices) {
