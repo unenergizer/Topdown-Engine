@@ -15,7 +15,6 @@ import java.util.Map;
 
 import static com.badlogic.gdx.graphics.GL20.GL_CULL_FACE;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_TEST;
-import static com.forgestorm.topdown.Main.loadShader;
 
 public class ChunkManager implements Disposable {
 
@@ -37,18 +36,29 @@ public class ChunkManager implements Disposable {
     public int worldHeight;
 
     /**
-     * The source texture is the texture for the entire atlas, the tileset
-     * @param sourceTex
+     * Overload of contructor that uses the default shader
+     * @param sourceTex The source texture is the texture for the entire atlas, the tileset
      */
-    public ChunkManager(Texture sourceTex) {
-        this.shaderProgram = loadShader("shaders/skybox.vert", "shaders/skybox.frag");
-        this.texture = sourceTex;
+    public ChunkManager(int w, int d, int h, Texture sourceTex) {
+        this(w,d,h,sourceTex, null); //TODO add default shader method
+        //Default shader should or should not have the light code? Probably not, this question is why I postponed
+    }
 
-        this.width = 5;
-        this.depth = 5;
-        this.height = 5;
+    /**
+     *
+     * @param sourceTex The source texture is the texture for the entire atlas, the tileset
+     * @param shader the shader used to get
+     */
+    public ChunkManager(int w, int d, int h, Texture sourceTex, ShaderProgram shader) {
+        this.texture = sourceTex;
+        this.shaderProgram = shader;
+
+        this.width = w;
+        this.depth = d;
+        this.height = h;
         this.worldHeight = height*CHUNK_SIZE;
 
+        //This code needs to be moved
         makeTestChunks(width, depth, height);
         //verifyChunks();
 

@@ -1,27 +1,21 @@
-package com.forgestorm.topdown.state.voxel;
+package com.forgestorm.topdown.test.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLFrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.forgestorm.topdown.OrthographicPerspectiveRenderer;
-import com.forgestorm.topdown.demoUtils.camera.TkPerspectiveCameraController;
-import com.forgestorm.topdown.state.GameState;
-import com.forgestorm.topdown.world.Chunk;
+import com.forgestorm.topdown.world.OrthographicPerspectiveRenderer;
+import com.forgestorm.topdown.test.demoUtils.camera.TkPerspectiveCameraController;
+import com.forgestorm.topdown.test.state.GameState;
 import com.forgestorm.topdown.world.ChunkManager;
-import com.forgestorm.topdown.world.ChunkMeshGenerator;
 
-import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_TEST;
-import static com.forgestorm.topdown.Main.loadShader;
-import static com.forgestorm.topdown.Main.renderUtils;
+import static com.forgestorm.topdown.test.Main.loadShader;
+import static com.forgestorm.topdown.test.Main.renderUtils;
 
 public class VoxelGameState2 implements GameState {
     private ChunkManager chunkManager;
@@ -52,7 +46,7 @@ public class VoxelGameState2 implements GameState {
 
         batch = new SpriteBatch();
 
-        chunkManager = new ChunkManager(renderUtils.getTexture("cube_top").getTexture());
+        chunkManager = new ChunkManager(5,5, 5, renderUtils.getTexture("cube_top").getTexture(), loadShader("shaders/chunk.vert", "shaders/chunk.frag"));
         chunkManager.generateAllMeshes();
     }
 

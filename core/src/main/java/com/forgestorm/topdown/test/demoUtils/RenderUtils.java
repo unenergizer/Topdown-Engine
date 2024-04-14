@@ -1,4 +1,4 @@
-package com.forgestorm.topdown.demoUtils;
+package com.forgestorm.topdown.test.demoUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;

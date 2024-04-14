@@ -1,4 +1,4 @@
-package com.forgestorm.topdown.state;
+package com.forgestorm.topdown.test.state;
 
 import com.badlogic.gdx.graphics.Camera;
 

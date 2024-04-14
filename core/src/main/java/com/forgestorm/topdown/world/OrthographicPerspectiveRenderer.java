@@ -1,4 +1,4 @@
-package com.forgestorm.topdown;
+package com.forgestorm.topdown.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;

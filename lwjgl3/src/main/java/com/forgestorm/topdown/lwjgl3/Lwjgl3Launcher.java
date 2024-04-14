@@ -2,8 +2,8 @@ package com.forgestorm.topdown.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.forgestorm.topdown.Main;
-import com.forgestorm.topdown.demoUtils.DcpTexturePackerManager;
+import com.forgestorm.topdown.test.Main;
+import com.forgestorm.topdown.test.demoUtils.DcpTexturePackerManager;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {

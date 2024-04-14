@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.forgestorm.topdown.Main.renderUtils;
+import static com.forgestorm.topdown.test.Main.renderUtils;
 import static com.forgestorm.topdown.world.ChunkManager.CHUNK_SIZE;
 
 @Getter

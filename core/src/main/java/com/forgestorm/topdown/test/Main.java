@@ -1,13 +1,12 @@
-package com.forgestorm.topdown;
+package com.forgestorm.topdown.test;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.forgestorm.topdown.demoUtils.RenderUtils;
-import com.forgestorm.topdown.state.GameState;
-import com.forgestorm.topdown.state.tk.TkGameState;
-import com.forgestorm.topdown.state.voxel.VoxelGameState2;
+import com.forgestorm.topdown.test.demoUtils.RenderUtils;
+import com.forgestorm.topdown.test.state.GameState;
+import com.forgestorm.topdown.test.state.VoxelGameState2;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
@@ -35,10 +34,6 @@ public class Main extends ApplicationAdapter {
             return; //We don't render anything unless our assetManager has finished loading textures
         }
 
-        if (currentState != null && Gdx.input.isKeyJustPressed(Input.Keys.G)) {
-            switchGameStates();
-        }
-
         if (currentState != null) {
             currentState.update();
             currentState.render();
@@ -59,18 +54,6 @@ public class Main extends ApplicationAdapter {
             currentState.dispose();
 
         renderUtils.dispose();
-    }
-
-    private void switchGameStates() {
-        if (currentState instanceof VoxelGameState2) {
-            currentState = new TkGameState();
-            currentState.init();
-            currentState.resize(width, height);
-        } else if (currentState instanceof TkGameState) {
-            currentState = new VoxelGameState2();
-            currentState.init();
-            currentState.resize(width, height);
-        }
     }
 
     public static ShaderProgram loadShader(String vert, String frag) {
