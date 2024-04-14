@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Disposable;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.forgestorm.topdown.GameConstants.Chunk.*;
+import static com.forgestorm.topdown.world.ChunkManager.CHUNK_SIZE;
 
 public class ChunkSection implements Disposable {
 
@@ -53,6 +53,12 @@ public class ChunkSection implements Disposable {
         if (localX >= CHUNK_SIZE || localY >= CHUNK_SIZE || localZ >= CHUNK_SIZE || localX < 0 || localY < 0 || localZ < 0) {
             throw new IllegalArgumentException("Block coordinates out of chunk bounds!");
         }
+
+        //Calculate the number of bits needed for the X index. log2(width) gives the number of bits needed for X
+        int MAX_Y_INDEX = (int) (Math.log(CHUNK_SIZE) / Math.log(2));
+        //Cumulative bits of Y
+        int MAX_Z_INDEX = MAX_Y_INDEX + (int) (Math.log(CHUNK_SIZE) / Math.log(2));
+
         return (localZ << MAX_Z_INDEX) | (localY << MAX_Y_INDEX) | localX;
     }
 

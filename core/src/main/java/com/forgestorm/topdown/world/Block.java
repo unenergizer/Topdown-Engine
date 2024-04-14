@@ -5,9 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.forgestorm.topdown.GameConstants.Chunk.CHUNK_SIZE;
-import static com.forgestorm.topdown.GameConstants.Text.SLASH;
 import static com.forgestorm.topdown.Main.renderUtils;
+import static com.forgestorm.topdown.world.ChunkManager.CHUNK_SIZE;
 
 @Getter
 public class Block {
@@ -67,6 +66,6 @@ public class Block {
 
     @Override
     public String toString() {
-        return "Chunk XZ: " + chunkX + SLASH + chunkZ + ", ChunkSection: " + chunkSection + ", BlockType: " + blockType + "\nLocal XYZ: " + localX + SLASH + localY + SLASH + localZ + "\nWorld XYZ: " + getWorldX() + SLASH + getWorldY() + SLASH + getWorldZ();
+        return "Chunk XZ: " + chunkX + "/" + chunkZ + ", ChunkSection: " + chunkSection + ", BlockType: " + blockType + "\nLocal XYZ: " + localX + "/" + localY + "/" + localZ + "\nWorld XYZ: " + getWorldX() + "/" + getWorldY() + "/" + getWorldZ();
     }
 }

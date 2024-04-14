@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.forgestorm.topdown.GameConstants.Chunk.*;
+import static com.forgestorm.topdown.world.ChunkManager.CHUNK_SIZE;
 
 public class ChunkMeshGenerator {
 

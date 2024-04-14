@@ -5,8 +5,7 @@ import com.badlogic.gdx.utils.Disposable;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.forgestorm.topdown.GameConstants.Chunk.CHUNK_SIZE;
-import static com.forgestorm.topdown.GameConstants.Text.SLASH;
+import static com.forgestorm.topdown.world.ChunkManager.CHUNK_SIZE;
 
 public class Chunk implements Disposable {
 
@@ -60,7 +59,7 @@ public class Chunk implements Disposable {
 
     @Override
     public String toString() {
-        return "Chunk XY: " + chunkX + SLASH + chunkZ + ", ChunkSections: " + chunkSections.length;
+        return "Chunk XY: " + chunkX + "/" + chunkZ + ", ChunkSections: " + chunkSections.length;
     }
 
     @Override

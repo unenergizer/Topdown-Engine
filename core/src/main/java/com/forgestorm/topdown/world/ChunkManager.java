@@ -15,10 +15,15 @@ import java.util.Map;
 
 import static com.badlogic.gdx.graphics.GL20.GL_CULL_FACE;
 import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_TEST;
-import static com.forgestorm.topdown.GameConstants.Chunk.*;
 import static com.forgestorm.topdown.Main.loadShader;
 
 public class ChunkManager implements Disposable {
+
+    /**
+     * The length, width, and height of a chunk in blocks. Min value 2.
+     */
+    public static final int CHUNK_SIZE = 16;
+
     private final Map<Integer, Chunk> chunkConcurrentMap = new HashMap<>();
     private final ChunkMeshGenerator chunkMeshGenerator;
 
@@ -31,6 +36,10 @@ public class ChunkManager implements Disposable {
 
     public int worldHeight;
 
+    /**
+     * The source texture is the texture for the entire atlas, the tileset
+     * @param sourceTex
+     */
     public ChunkManager(Texture sourceTex) {
         this.shaderProgram = loadShader("shaders/skybox.vert", "shaders/skybox.frag");
         this.texture = sourceTex;
@@ -55,7 +64,7 @@ public class ChunkManager implements Disposable {
 
     public void draw(Camera cam) {
         Gdx.gl.glEnable(GL_DEPTH_TEST);
-        //Gdx.gl.glEnable(GL_CULL_FACE);
+        Gdx.gl.glEnable(GL_CULL_FACE);
 
         //Draw the mesh here using renderer camera
         for (Chunk chunk : getChunks()) {
@@ -75,7 +84,7 @@ public class ChunkManager implements Disposable {
             }
         }
 
-        //Gdx.gl.glDisable(GL_CULL_FACE);
+        Gdx.gl.glDisable(GL_CULL_FACE);
         Gdx.gl.glDisable(GL_DEPTH_TEST);
     }
 
@@ -113,7 +122,7 @@ public class ChunkManager implements Disposable {
                                 Block volume = chunk.getLocalChunkBlock(x, y, z, chunkSection);
 
                                 if (x*2 + (chunkX + 1) > y && z*2 + (chunkZ + 1) > y)
-                                    volume.setBlockType(BlockType.TRIANGULAR_PRISM_NE);
+                                    volume.setBlockType(BlockType.RAMP_W);
                                 else
                                     volume.setBlockType(BlockType.AIR);
                             }
